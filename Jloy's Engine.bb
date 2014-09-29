@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -53,19 +53,103 @@
 ;==============================================================================================================;
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-;   VARIABLES
-; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/	
+;   STARTUP
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+; --- Include critical libraries before starting ----
+; Code code
+Include "_SourceCode\Core\Core_GeneralConstants.bb"
+Include "_SourceCode\Core\Core_InputManagement.bb"
 
-	; ---- Meshes ----
-	Global Mesh_Sonic					= LoadAnimMesh("Characters/Sonic/Sonic.b3d")
-	RecursiveExtractAnimSeq(Mesh_Sonic,	0,		223)	; Idle
-	RecursiveExtractAnimSeq(Mesh_Sonic,	225,	248)	; Walking
-	RecursiveExtractAnimSeq(Mesh_Sonic,	250,	258)	; Running
-	RecursiveExtractAnimSeq(Mesh_Sonic,	259,	266)	; Spinning
-	HideEntity(Mesh_Sonic)
+; Libraries code
+Include "_SourceCode\Libraries\Library_FastImage.bb"
+Include "_SourceCode\Libraries\Library_XMLParser.bb"
+Include "_SourceCode\Systems\System_FxManager.bb"
+
+; Game code
+Include "_SourceCode\Game\Game_Settings.bb"
+
+; --- Initializate 3D mode ---
+Game_LoadConfig()
+Graphics3D(GAME_WINDOW_W, GAME_WINDOW_H, GAME_WINDOW_DEPTH, GAME_WINDOW_MODE)
+Dither(False)
+WBuffer(True)
+AntiAlias(False)
+SetBuffer(BackBuffer())
+HidePointer()
+
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   INCLUDES
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+; Core code
+Include "_SourceCode\Core\Core_DeltaTime.bb"
+Include "_SourceCode\Core\Core_Maths.bb"
+Include "_SourceCode\Core\Core_Tools.bb"
+
+; Game code
+Include "_SourceCode\Game\Game.bb"
+Include "_SourceCode\Game\Game_Interface.bb"
+Include "_SourceCode\Game\Game_Resources_Models.bb"
+Include "_SourceCode\Game\Game_Resources_Textures.bb"
+Include "_SourceCode\Game\Game_Resources_Sounds.bb"
+
+; Stage code
+Include "_SourceCode\Game\Stage\Stage.bb"
+Include "_SourceCode\Game\Stage\Camera\Camera.bb"
+Include "_SourceCode\Game\Stage\Player\Player.bb"
+Include "_SourceCode\Game\Stage\Player\Player_Management.bb"
+Include "_SourceCode\Game\Stage\Player\Player_Motion.bb"
+Include "_SourceCode\Game\Stage\Player\Player_Animation.bb"
+Include "_SourceCode\Game\Stage\Objects\Objects.bb"
+
+; Menu code
+Include "_SourceCode\Game\Menu\Menu.bb"
+Include "_SourceCode\Game\Menu\Menu_Machine.bb"
+Include "_SourceCode\Game\Menu\Menu_Interface.bb"
+Include "_SourceCode\Game\Menu\Menu_Control_Text.bb"
+Include "_SourceCode\Game\Menu\Menu_Control_Image.bb"
+
+; General systems code
+Include "_SourceCode\Systems\System_FxManager.bb"
+Include "_SourceCode\Systems\System_PostFX.bb"
+Include "_SourceCode\Systems\System_GameScript_VM.bb"
+Include "_SourceCode\Systems\System_GameScript_Compiler.bb"
+Include "_SourceCode\Systems\System_GameScript_Functions.bb"
+
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   ENTRY POINT
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+Global menuState = 0
+Const MENU_TITLE = 0
+Const MENU_MAIN = 1
+Const MENU_CHARSEL = 2
+Const MENU_GAMELOOP = 3
+
+	Game_Startup()
+	mainLoop()
 	
-	Global Mesh_Sonic_Spindash			= LoadAnimMesh("Characters/Sonic/Spindash.b3d")
-	HideEntity(Mesh_Sonic_Spindash)
+	
+	Function mainLoop()
+		While(1)
+			Select menuState
+				Case MENU_TITLE
+					; menu_MenuTitle()
+				Case MENU_MAIN
+					; menu_MenuMain()
+				Case MENU_CHARSEL
+					; menu_CharacterSelect()
+				Case MENU_GAMELOOP
+					; gameRunLoop()
+				Default	
+					RuntimeError("Unknown menu state.")
+			End Select
+		Wend	
+		End
+	End Function
 
-	Global Mesh_Sonic_JumpBall			= LoadAnimMesh("Characters/Sonic/Jump.b3d")
-	HideEntity(Mesh_Sonic_JumpBall)
+	Function gameRunLoop()
+		If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
+		Game_Update()
+	End Function
+
+	
