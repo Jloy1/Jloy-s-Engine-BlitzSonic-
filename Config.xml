@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration>
+    <graphics>
+        <screen width="1024" height="768" depth="0" fullscreen="1" vsync="0"/>
+        <effects>
+            <EMBM enabled="0" debug="1" poweroftwo="1" borderfix="1"/>
+			<blur enabled="1" texsize="256"/>
+        </effects>
+    </graphics>
+	<input mouse_speed = "100" mouse_sensitivy = "1" gamepad="0" gamepad_threshold="0.2">
+        <bind action="forward"        device="keyboard" button="w"       altdevice="none"  altbutton="none"/>
+        <bind action="backwards"      device="keyboard" button="s"       altdevice="none"  altbutton="none"/>
+        <bind action="left"           device="keyboard" button="a"       altdevice="none"  altbutton="none"/>
+        <bind action="right"          device="keyboard" button="d"       altdevice="none"  altbutton="none"/>
+        <bind action="actionA"        device="keyboard" button="z"       altdevice="mouse" altbutton="left"/>
+        <bind action="actionB"        device="keyboard" button="x"       altdevice="mouse" altbutton="right"/>
+
+        <bind action="camera_left"    device="mouse"    button="x-"      altdevice="none" altbutton="none"/>
+        <bind action="camera_right"   device="mouse"    button="x+"      altdevice="none" altbutton="none"/>
+        <bind action="camera_up"      device="mouse"    button="y-"      altdevice="none" altbutton="none"/>
+        <bind action="camera_down"    device="mouse"    button="y+"      altdevice="none" altbutton="none"/>
+        <bind action="camera_zoomin"  device="mouse"    button="wheel-"  altdevice="none" altbutton="none"/>
+        <bind action="camera_zoomout" device="mouse"    button="wheel+"  altdevice="none" altbutton="none"/>
+    </input>
+    <gameplay>
+        <control mode="2"/>
+		<camera smoothness="1.0" targetpov="1" rotation_x="170" rotation_y="0" rotation_speed_x="2.5" rotation_speed_y="2.5" near="3.0" far="400"/>
+    </gameplay>
+</configuration>

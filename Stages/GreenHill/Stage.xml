@@ -1,0 +1,504 @@
+<?xml version="1.0"?>
+<!-- Remember! The properties and naming conventions are very strict with the current parser! -->
+<!-- All names and types are case sensitive. -->
+<root>
+	<information>
+		<name>Green Hill</name>
+		<music>aiz_brawl_loop.ogg</music>
+		<skybox>Skydome/Sky.b3d</skybox>
+		<ambientlight r="140" g="190" b="200"/>
+		<water on="1" level="-3000000" />
+	</information>
+	<scene>
+		<!-- Static meshes and meshes -->
+		<animmesh filename="Stage/Stage.b3d" visible="1" collision="1">
+			<position x="0.0" y="0.0" z="0.0"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+			<scale x="1.0" y="1.0" z="1.0"/>
+			<attributes>
+				<color r="255" g="255" b="255"/>
+			</attributes>
+		</animmesh>
+		
+		<!-- Lights -->
+		<light type="directional" range="100">
+			<position x="4.5" y="0.0" z="0.0"/>
+			<rotation pitch="45.0" yaw="23.0" roll="0.0"/>
+			<color r="255" g="255" b="235"/>
+		</light>
+		
+		<!-- Objects -->
+		<object type="player">
+			<position x="0.0" y="20.0" z="0.0"/>
+		</object>	
+		
+		<object type="spring">
+			<position x="49.1138" y="-3.23819" z="224.992"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="43.7134" y="-3.23819" z="224.992"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="644.204" y="-3.8002" z="91.9001"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="652.404" y="-3.8002" z="91.9001"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.113" y="-3.23819" z="115.159"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="474.778" y="78.6109" z="115.159"/>
+			<rotation pitch="0.0" yaw="0.0" roll="90.0"/>
+		</object>
+		<object type="spring">
+			<position x="474.778" y="78.6109" z="121.41"/>
+			<rotation pitch="0.0" yaw="0.0" roll="90.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.113" y="-3.23819" z="121.41"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="43.7134" y="-3.23819" z="230.617"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="49.1138" y="-3.23819" z="230.617"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="699.228" y="-3.8002" z="577.413"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="675.969" y="-3.8002" z="577.413"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.897" y="132.8" z="857.154"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.897" y="132.8" z="841.453"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.897" y="132.8" z="825.381"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="471.897" y="132.8" z="809.77"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="707.618" y="30.3057" z="128.384"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="921.967" y="245.627" z="738.577"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="294.632" y="122.569" z="961.712"/>
+			<rotation pitch="45.0" yaw="25.0" roll="2.41484e-006"/>
+		</object>
+		<object type="spring">
+			<position x="314.824" y="122.569" z="961.712"/>
+			<rotation pitch="45.0" yaw="25.0" roll="2.41484e-006"/>
+		</object>
+		<object type="spring">
+			<position x="211.378" y="152.12" z="1330.52"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="187.717" y="152.12" z="1331.88"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="861.499" y="206.802" z="1229.31"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="877.08" y="206.802" z="1229.31"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="892.941" y="206.802" z="1229.31"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="921.967" y="218.782" z="712.622"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="998.351" y="256.176" z="1504.54"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="998.351" y="256.176" z="1486.08"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1008.97" y="256.176" z="1495.23"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-287.04" y="-169.812" z="3585.91"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="992.942" y="413.768" z="1344.73"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="992.942" y="413.768" z="1333.76"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1523.9" y="486.721" z="1370.52"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1539.51" y="486.721" z="1370.52"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1531.79" y="486.721" z="1370.52"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1697.4" y="496.039" z="1702.53"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1697.4" y="496.039" z="1713.7"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1697.4" y="496.039" z="1725.03"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1904.43" y="413.496" z="1741.67"/>
+			<rotation pitch="45.0" yaw="45.0" roll="-1.20742e-006"/>
+		</object>
+		<object type="spring">
+			<position x="2053.64" y="437.762" z="1767.65"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="2065.29" y="437.762" z="1767.65"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="2076.94" y="437.762" z="1767.65"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1146.54" y="361.098" z="2560.35"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1144.27" y="512.118" z="2412.58"/>
+			<rotation pitch="30.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1169.27" y="512.118" z="2412.58"/>
+			<rotation pitch="30.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1194.27" y="512.118" z="2412.58"/>
+			<rotation pitch="30.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1219.27" y="512.118" z="2412.58"/>
+			<rotation pitch="30.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1805.4" y="492.255" z="2862.98"/>
+			<rotation pitch="-9.52315" yaw="3.03376" roll="20.2718"/>
+		</object>
+		<object type="spring">
+			<position x="1805.4" y="492.255" z="2872.98"/>
+			<rotation pitch="-9.52315" yaw="3.03376" roll="20.2718"/>
+		</object>
+		<object type="spring">
+			<position x="1805.4" y="492.255" z="2882.98"/>
+			<rotation pitch="-9.52315" yaw="3.03376" roll="20.2718"/>
+		</object>
+		<object type="spring">
+			<position x="1805.4" y="492.255" z="2892.98"/>
+			<rotation pitch="-9.52315" yaw="3.03376" roll="20.2718"/>
+		</object>
+		<object type="spring">
+			<position x="2015.89" y="361.15" z="2093.07"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="2015.89" y="361.15" z="2083.07"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="2015.89" y="361.15" z="2073.07"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="2015.89" y="361.15" z="2063.07"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="134.632" y="221.7" z="1856.81"/>
+			<rotation pitch="-3.41509e-006" yaw="45.0" roll="-90.0"/>
+		</object>
+		<object type="spring">
+			<position x="134.632" y="231.7" z="1856.81"/>
+			<rotation pitch="-3.41509e-006" yaw="45.0" roll="-90.0"/>
+		</object>
+		<object type="spring">
+			<position x="134.632" y="241.7" z="1856.81"/>
+			<rotation pitch="-3.41509e-006" yaw="45.0" roll="-90.0"/>
+		</object>
+		<object type="spring">
+			<position x="134.632" y="251.7" z="1856.81"/>
+			<rotation pitch="-3.41509e-006" yaw="45.0" roll="-90.0"/>
+		</object>
+		<object type="spring">
+			<position x="134.632" y="261.7" z="1856.81"/>
+			<rotation pitch="-3.41509e-006" yaw="45.0" roll="-90.0"/>
+		</object>
+		<object type="spring">
+			<position x="67.4894" y="305.21" z="1688.43"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="67.4894" y="305.21" z="1698.43"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="67.4894" y="305.21" z="1708.43"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="67.4894" y="305.21" z="1718.43"/>
+			<rotation pitch="0.0" yaw="0.0" roll="45.0"/>
+		</object>
+		<object type="spring">
+			<position x="154.481" y="203.527" z="2131.36"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="179.481" y="203.527" z="2131.36"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="204.481" y="203.527" z="2131.36"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="229.481" y="203.527" z="2131.36"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-277.04" y="-169.812" z="3585.91"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-267.04" y="-169.812" z="3585.91"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-398.212" y="-162.232" z="3566.44"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-398.212" y="-162.232" z="3576.44"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-388.212" y="-162.232" z="3566.44"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-388.212" y="-162.232" z="3576.44"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-147.404" y="-128.826" z="3926.94"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-147.404" y="-128.826" z="3936.94"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-157.404" y="-128.826" z="3936.94"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-157.404" y="-128.826" z="3926.94"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-115.505" y="94.7497" z="3896.19"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="-181.304" y="249.767" z="3896.19"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="140.304" y="252.045" z="1515.09"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="157.586" y="224.623" z="1515.09"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="601.123" y="75.8702" z="1854.19"/>
+			<rotation pitch="45.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1171.54" y="361.098" z="2560.35"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1196.54" y="361.098" z="2560.35"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1221.54" y="361.098" z="2560.35"/>
+			<rotation pitch="0.0" yaw="0.0" roll="0.0"/>
+		</object>
+		<object type="spring">
+			<position x="1265.25" y="492.002" z="2644.6"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1265.25" y="492.002" z="2654.6"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1265.25" y="492.002" z="2664.6"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="spring">
+			<position x="1265.25" y="492.002" z="2674.6"/>
+			<rotation pitch="0.0" yaw="0.0" roll="-45.0"/>
+		</object>
+		<object type="ring">
+			<position x="-4.06839e-005" y="5.13665e-006" z="-2.24171e-013"/>
+		</object>
+		<object type="ring">
+			<position x="-55.5111" y="5.5224" z="114.238"/>
+		</object>
+		<object type="ring">
+			<position x="-55.5111" y="5.5224" z="129.238"/>
+		</object>
+		<object type="ring">
+			<position x="-55.5111" y="5.5224" z="144.238"/>
+		</object>
+		<object type="ring">
+			<position x="-55.5111" y="5.5224" z="159.238"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="14.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="29.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="44.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="59.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="74.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="89.8586" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="49.1138" y="104.859" z="230.617"/>
+		</object>
+		<object type="ring">
+			<position x="8.39294" y="5.5224" z="420.394"/>
+		</object>
+		<object type="ring">
+			<position x="8.39294" y="5.5224" z="435.394"/>
+		</object>
+		<object type="ring">
+			<position x="8.39294" y="5.5224" z="450.394"/>
+		</object>
+		<object type="ring">
+			<position x="8.39294" y="5.5224" z="465.394"/>
+		</object>
+		<object type="ring">
+			<position x="215.66" y="5.5224" z="522.078"/>
+		</object>
+		<object type="ring">
+			<position x="230.66" y="5.5224" z="522.078"/>
+		</object>
+		<object type="ring">
+			<position x="245.66" y="5.5224" z="522.078"/>
+		</object>
+		<object type="ring">
+			<position x="260.66" y="5.5224" z="522.078"/>
+		</object>
+		<object type="ring">
+			<position x="288.706" y="1.72129" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="304.911" y="1.72129" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="320.55" y="2.69496" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="327.31" y="12.4958" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="329.194" y="26.0304" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="329.194" y="41.0304" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="329.194" y="56.0304" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="647.863" y="1.72129" z="8.73459"/>
+		</object>
+		<object type="ring">
+			<position x="647.863" y="1.72129" z="23.7346"/>
+		</object>
+		<object type="ring">
+			<position x="647.863" y="1.72129" z="38.7346"/>
+		</object>
+		<object type="ring">
+			<position x="647.863" y="1.72129" z="53.7346"/>
+		</object>
+		<object type="ring">
+			<position x="707.208" y="37.2175" z="53.7346"/>
+		</object>
+		<object type="ring">
+			<position x="707.208" y="37.2175" z="68.7346"/>
+		</object>
+		<object type="ring">
+			<position x="707.208" y="37.2175" z="83.7346"/>
+		</object>
+		<object type="ring">
+			<position x="707.208" y="37.2175" z="98.7346"/>
+		</object>
+
+
+			
+	</scene>
+</root>
