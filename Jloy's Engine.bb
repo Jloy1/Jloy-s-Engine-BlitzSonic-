@@ -128,7 +128,8 @@ Const MENU_GAMELOOP 	= 3
 Global menuState 		= MENU_TITLE
 
 ; Load our text image
-Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.302x34.png", 23, 17, 0, 26)
+Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.png", 23, 17, 0, 39)
+MaskImage(menuText01, 255, 0, 255)
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   ENTRY POINT
@@ -178,8 +179,8 @@ Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.302x34.png", 23, 17,
 		; <BACKGROUND IMAGE GOES HERE>
 		
 		; Next, render the text.
-		RenderMenuText(4, 4, "jloys engine test")
-		RenderMenuText(4, 24, "press enter to start")
+		RenderMenuText(GAME_WINDOW_W/2, 4, "Jloy's Test Engine", True)
+		RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-24, "Press Enter to begin", True)
 		
 		; Listen to the enter key and start game if hit
 		If (KeyHit(KEY_ENTER)) Then preLoadGame()
@@ -195,12 +196,29 @@ Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.302x34.png", 23, 17,
 	; =========================================================================================================
 	; RenderMenuText
 	; =========================================================================================================
-	Function RenderMenuText(x, y, textString$, textTileOffset=0)
+	Function RenderMenuText(x, y, textString$, centreAlign=False, textTileOffset=0)
 		; Get the string and gather the tiles to render
+		If (centreAlign = True) Then 
+			xStart = x - (Len(textString$) * (9 + textTileOffset))
+			x = xStart
+		End If
+		
+		; Now go through each letter and select the tile to draw.
 		For i = 1 To Len(textString$)
-			If Not (Asc(Mid$(textString$, i, 1)) = 32) Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-97)
+			AscNum = Asc(Mid$(textString$, i, 1))
+			; If the tile isn't a space (blank tile)
+			If Not (AscNum = 32) Then
+				; Select the tile using the offset.
+				If ((AscNum >= 48) And (AscNum <= 57))  Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-22)
+				If ((AscNum >= 65) And (AscNum <= 90))  Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-65)
+				If ((AscNum >= 97) And (AscNum <= 122)) Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-97)
+				If (AscNum = 39) Then DrawImage(menuText01, x, y, 36)
+			End If
+			
+			; Add to the next offset. 
 			x = x + 18 + textTileOffset
 		Next
+		
 	End Function
 ;~IDEal Editor Parameters:
 ;~C#Blitz3D
