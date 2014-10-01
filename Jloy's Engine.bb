@@ -116,30 +116,37 @@ Include "_SourceCode\Systems\System_GameScript_Compiler.bb"
 Include "_SourceCode\Systems\System_GameScript_Functions.bb"
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   MENU OBJECTS
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+; Different menu screens
+Const MENU_TITLE 		= 0
+Const MENU_MAIN 		= 1
+Const MENU_CHARSEL 		= 2
+Const MENU_GAMELOOP 	= 3
+	
+; Current menu screen
+Global menuState 		= MENU_TITLE
+
+; Load our text image
+Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.302x34.png", 23, 17, 0, 26)
+
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   ENTRY POINT
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-
-Global menuState = 0
-Const MENU_TITLE = 0
-Const MENU_MAIN = 1
-Const MENU_CHARSEL = 2
-Const MENU_GAMELOOP = 3
-
-	Game_Startup()
+	
+	; Enter the main loop
 	mainLoop()
-	
-	
 	Function mainLoop()
 		While(1)
-			Select menuState
+			Select (menuState)
 				Case MENU_TITLE
-					; menu_MenuTitle()
+					Menu_MenuTitle()
 				Case MENU_MAIN
 					; menu_MenuMain()
 				Case MENU_CHARSEL
 					; menu_CharacterSelect()
 				Case MENU_GAMELOOP
-					; gameRunLoop()
+					gameRunLoop()
 				Default	
 					RuntimeError("Unknown menu state.")
 			End Select
@@ -147,9 +154,53 @@ Const MENU_GAMELOOP = 3
 		End
 	End Function
 
+	Function preLoadGame()
+		Game_Startup()
+		menuState = MENU_GAMELOOP
+	End Function
+
 	Function gameRunLoop()
-		If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
+		;If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
 		Game_Update()
 	End Function
 
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   MENU SCREENS
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/	
 	
+	; =========================================================================================================
+	; Menu_MenuTitle
+	; =========================================================================================================
+	Function Menu_MenuTitle()		; Clear the screen.
+		Cls()
+		
+		; Draw the background first
+		; <BACKGROUND IMAGE GOES HERE>
+		
+		; Next, render the text.
+		RenderMenuText(4, 4, "jloys engine test")
+		RenderMenuText(4, 24, "press enter to start")
+		
+		; Listen to the enter key and start game if hit
+		If (KeyHit(KEY_ENTER)) Then preLoadGame()
+		
+		; Flip the buffer.
+		Flip()
+	End Function
+	
+
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   RENDER MENU TEXT
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/		
+	; =========================================================================================================
+	; RenderMenuText
+	; =========================================================================================================
+	Function RenderMenuText(x, y, textString$, textTileOffset=0)
+		; Get the string and gather the tiles to render
+		For i = 1 To Len(textString$)
+			If Not (Asc(Mid$(textString$, i, 1)) = 32) Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-97)
+			x = x + 18 + textTileOffset
+		Next
+	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D
