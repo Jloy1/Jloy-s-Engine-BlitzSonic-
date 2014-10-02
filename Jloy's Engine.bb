@@ -127,9 +127,16 @@ Const MENU_GAMELOOP 	= 3
 ; Current menu screen
 Global menuState 		= MENU_TITLE
 
+; Used to navigate menus
+Global menuPosition		= 0
+Global menuMaxPos		= 0
+
 ; Load our text image
 Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.png", 23, 17, 0, 39)
+Global menuCursor	= LoadAnimImage("Interface\Menu\MenuCursor.png", 20, 15, 0, 2)
+
 MaskImage(menuText01, 255, 0, 255)
+MaskImage(menuCursor, 255, 0, 255)
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   ENTRY POINT
@@ -143,9 +150,9 @@ MaskImage(menuText01, 255, 0, 255)
 				Case MENU_TITLE
 					Menu_MenuTitle()
 				Case MENU_MAIN
-					; menu_MenuMain()
+					Menu_MenuMain()
 				Case MENU_CHARSEL
-					; menu_CharacterSelect()
+					Menu_CharacterSelect()
 				Case MENU_GAMELOOP
 					gameRunLoop()
 				Default	
@@ -172,31 +179,168 @@ MaskImage(menuText01, 255, 0, 255)
 	; =========================================================================================================
 	; Menu_MenuTitle
 	; =========================================================================================================
-	Function Menu_MenuTitle()		; Clear the screen.
+	Function Menu_MenuTitle()		; Clear the screen
 		Cls()
 		
 		; Draw the background first
 		; <BACKGROUND IMAGE GOES HERE>
 		
-		; Next, render the text.
+		; Next, render the text
 		RenderMenuText(GAME_WINDOW_W/2, 4, "Jloy's Test Engine", True)
-		RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-24, "Press Enter to begin", True)
-		
+		If ((MilliSecs() Mod 1000) <= 500) Then RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-24, "Press Enter to begin", True)
+
 		; Listen to the enter key and start game if hit
-		If (KeyHit(KEY_ENTER)) Then preLoadGame()
+		If (KeyHit(KEY_ENTER)) Then menuState = MENU_MAIN
 		
-		; Flip the buffer.
+		; Flip the buffer
 		Flip()
 	End Function
 	
+	
+	; =========================================================================================================
+	; Menu_MenuMain
+	; =========================================================================================================
+	Function Menu_MenuMain()
+		; Set the max position of this menu
+		menuMaxPos = 2
+		
+		; Listen for the input
+		PerformMenuInput()
+		
+		; Clear the screen
+		Cls()
+		
+		; Draw the background first
+		; <BACKGROUND IMAGE GOES HERE>
+		
+		; Next, render the text
+		RenderMenuText(GAME_WINDOW_W/2, 4, "Select an option", True)
+		Select (menuPosition)
+			Case 0
+				RenderMenuText(GAME_WINDOW_W/2, 64, "Sandbox", True, True)
+				RenderMenuText(GAME_WINDOW_W/2, 84, "Options", True)
+				RenderMenuText(GAME_WINDOW_W/2, 104, "Exit", True)
+			Case 1
+				RenderMenuText(GAME_WINDOW_W/2, 64, "Sandbox", True)
+				RenderMenuText(GAME_WINDOW_W/2, 84, "Options", True, True)
+				RenderMenuText(GAME_WINDOW_W/2, 104, "Exit", True)
+			Case 2
+				RenderMenuText(GAME_WINDOW_W/2, 64, "Sandbox", True)
+				RenderMenuText(GAME_WINDOW_W/2, 84, "Options", True)
+				RenderMenuText(GAME_WINDOW_W/2, 104, "Exit", True, True)
+		End Select	
+		
+		; Listen for the selection
+		If (KeyHit(KEY_ENTER)) Then 
+			Select (menuPosition)
+				Case 0
+					menuState = MENU_CHARSEL
+				Case 1
+					PlaySound(Sound_Ring)
+				Case 2
+					PlaySound(Sound_Ring)
+			End Select
+		End If
+		
+		; Flip the buffer
+		Flip()
+	End Function
 
+
+	; =========================================================================================================
+	; Menu_CharacterSelect
+	; =========================================================================================================
+	Function Menu_CharacterSelect()
+		; Set the max position of this menu
+		menuMaxPos = 2
+		
+		; Listen for the input
+		PerformMenuInput(1)
+		
+		; Clear the screen
+		Cls()
+		
+		; Draw the background first
+		; <BACKGROUND IMAGE GOES HERE>
+		
+		; Next, render the text
+		RenderMenuText(GAME_WINDOW_W/2, 4, "Select a character", True)
+		Select (menuPosition)
+			Case 0
+				RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-40, "Sonic", True)
+			Case 1
+				RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-40, "Amy", True)
+			Case 2
+				RenderMenuText(GAME_WINDOW_W/2, GAME_WINDOW_H-40, "Tails", True)
+		End Select	
+		
+		; Listen for the selection
+		If (KeyHit(KEY_ENTER)) Then 
+			Select (menuPosition)
+				Case 0
+					preLoadGame()
+				Case 1
+					PlaySound(Sound_Ring)
+				Case 2
+					PlaySound(Sound_Ring)
+			End Select
+		End If
+		
+		; Flip the buffer
+		Flip()
+	End Function
+
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   MENU INPUT LISTENER
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/		
+	; =========================================================================================================
+	; PerformMenuInput
+	; =========================================================================================================
+	; TODO: Allow for user configurable keys to trigger
+	; =========================================================================================================
+	Function PerformMenuInput(inputStyle=0)
+		Select (inputStyle)
+			Case 0 ; UP DOWN STYLE
+				If KeyHit(KEY_ARROW_UP) Then
+					If (menuPosition = 0) Then
+						menuPosition = menuMaxPos
+					Else
+						menuPosition = menuPosition - 1
+					End If
+				End If				
+				If KeyHit(KEY_ARROW_DOWN) Then
+					If (menuPosition = menuMaxPos) Then
+						menuPosition = 0
+					Else
+						menuPosition = menuPosition + 1
+					End If
+				End If
+				
+			Case 1 ; LEFT RIGHT STYLE
+				If KeyHit(KEY_ARROW_LEFT) Then
+					If (menuPosition = 0) Then
+						menuPosition = menuMaxPos
+					Else
+						menuPosition = menuPosition - 1
+					End If
+				End If				
+				If KeyHit(KEY_ARROW_RIGHT) Then
+					If (menuPosition = menuMaxPos) Then
+						menuPosition = 0
+					Else
+						menuPosition = menuPosition + 1
+					End If
+				End If				
+		End Select
+	End Function
+	
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   RENDER MENU TEXT
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/		
 	; =========================================================================================================
 	; RenderMenuText
 	; =========================================================================================================
-	Function RenderMenuText(x, y, textString$, centreAlign=False, textTileOffset=0)
+	Function RenderMenuText(x, y, textString$, centreAlign=False, drawArrow=False, textTileOffset=0)
 		; Get the string and gather the tiles to render
 		If (centreAlign = True) Then 
 			xStart = x - (Len(textString$) * (9 + textTileOffset))
@@ -213,12 +357,16 @@ MaskImage(menuText01, 255, 0, 255)
 				If ((AscNum >= 65) And (AscNum <= 90))  Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-65)
 				If ((AscNum >= 97) And (AscNum <= 122)) Then DrawImage(menuText01, x, y, Asc(Mid$(textString$, i, 1))-97)
 				If (AscNum = 39) Then DrawImage(menuText01, x, y, 36)
+				If (AscNum = 58) Then DrawImage(menuText01, x, y, 37)
 			End If
 			
 			; Add to the next offset. 
 			x = x + 18 + textTileOffset
 		Next
-		
+		If (drawArrow = True) Then
+			DrawImage(menuCursor, xStart-40, y+1, 0)
+			DrawImage(menuCursor, x+20, y+1, 1)
+		End If
 	End Function
 ;~IDEal Editor Parameters:
 ;~C#Blitz3D
