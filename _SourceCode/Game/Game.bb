@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -148,11 +148,8 @@
 	; Game_Startup
 	; ---------------------------------------------------------------------------------------------------------
 	Function Game_Startup()
-		; Set game title
-		AppTitle(GAME_TITLE$)
-		WindowHWND = SystemProperty("AppHWND")
-		InitDraw(SystemProperty("Direct3DDevice7"))
-		FxManager_Startup()
+		; Start up the FX Manager
+		FxManager_Startup()	
 		
 		; Startup gameplay values
 		Game\Gameplay\Character = CHARACTER_SONIC
@@ -210,7 +207,73 @@
 	; Game_End
 	; ---------------------------------------------------------------------------------------------------------
 	Function Game_End()
-
+		; Set the state to the main menu.
+		menuState = MENU_MAIN
+		
+		; Enumerate all possible entities and objects
+		; World Meshes and Lights
+		For st.MeshStructure = Each MeshStructure
+			FreeEntity(st\Entity)
+			Delete(st)
+		Next
+		For wl.WorldLight = Each WorldLight
+			FreeEntity(wl\Entity)
+			Delete(wl)
+		Next
+		
+		FreeEntity Game\Stage\Properties\SkyBox
+		FreeEntity Game\Stage\Properties\Water
+		FreeTexture Game\Stage\Properties\WaterTexture
+		FreeTexture Game\Stage\Properties\WaterDistortion
+		
+		; Objects
+		For ob.tObject = Each tObject
+			If ((ob\IValues[0]) And (ob\ObjType = OBJTYPE_RING)) Then FreeEntity(ob\IValues[0])
+			FreeEntity ob\Entity
+			Delete ob\Position
+			Delete ob
+		Next
+		
+		; Cameras
+		For cm.tCamera = Each tCamera
+			FreeEntity(cm\Entity)
+			Delete(cm\Position)
+			Delete(cm\Rotation)
+			Delete(cm\Alignment)
+			Delete(cm\Target)
+			Delete(cm\TargetPosition)
+			Delete(cm\TargetRotation)
+			Delete(cm)
+		Next
+		
+		; Players
+		For pl.tPlayer = Each tPlayer
+			FreeEntity(pl\Objects\Mesh_JumpBall)
+			FreeEntity(pl\Objects\Entity)
+			FreeEntity(pl\Objects\Mesh)
+			FreeEntity(pl\Objects\Mesh_Spindash)
+			FreeEntity(pl\Objects\Shadow)
+			
+			Delete pl\Motion\Speed
+			Delete pl\Motion\Align
+			Delete pl\Animation\Align
+			Delete pl\Objects
+			Delete pl\Motion
+			Delete pl\Animation
+			Delete pl\Flags
+			Delete pl
+		Next
+		
+		FreeEntity Game\Stage\Root
+		FreeEntity Game\Stage\Gravity
+		
+		
+		
+		; Stop the music
+		StopChannel(Channel_BackgroundMusic)
+		
+		; Reset Game State
+		Game\State = GAME_MODE_STARTUP
 	End Function
 
 	; =========================================================================================================
@@ -252,3 +315,5 @@
 	Game\Stage					= New tGame_Stage
 	Game\Stage\Properties		= New tGame_StageProperties
 	Game\Others					= New tGame_Others
+;~IDEal Editor Parameters:
+;~C#Blitz3D

@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -68,6 +68,12 @@
 	Type MeshStructure
 		Field Entity
 	End Type
+	
+	Type WorldLight
+		Field Entity
+	End Type
+	
+	Global Channel_BackgroundMusic
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ; 	METHODS
@@ -287,27 +293,33 @@
 								; Update progress bar
 								Game_Stage_UpdateProgressBar("Loading scene light "+j, Float#(j)/Float#(xmlNodeChildCount(RootChildNode)))
 								
+								; Create structure
+								wLight.WorldLight = New WorldLight
+								
 								; Retrieve mesh properties information
-								Light = 0
+								wLight\Entity = 0
 								LightType$	= xmlNodeAttributeValueGet(SceneChildNode, "type")
 								Select LightType$
 									Case "directional"
-										Light = CreateLight(1)
+										wLight\Entity = CreateLight(1)
 									Case "point"
-										Light = CreateLight(2)
+										wLight\Entity = CreateLight(2)
 									Case "spot"
-										Light = CreateLight(3)
+										wLight\Entity = CreateLight(3)
 								End Select
-								LightRange(Light, Float(xmlNodeAttributeValueGet(SceneChildNode, "range")))
+								LightRange(wLight\Entity, Float(xmlNodeAttributeValueGet(SceneChildNode, "range")))
+								
+
 								
 								; Setup position, rotation and scale.
 								LightPosition = xmlNodeFind("position", SceneChildNode)
-								If (LightPosition<>0) Then PositionEntity(Light, Float(xmlNodeAttributeValueGet(LightPosition, "x")), Float(xmlNodeAttributeValueGet(LightPosition, "y")), Float(xmlNodeAttributeValueGet(LightPosition, "z")))
+								If (LightPosition<>0) Then PositionEntity(wLight\Entity, Float(xmlNodeAttributeValueGet(LightPosition, "x")), Float(xmlNodeAttributeValueGet(LightPosition, "y")), Float(xmlNodeAttributeValueGet(LightPosition, "z")))
 								LighRotation = xmlNodeFind("rotation", SceneChildNode)
-								If (LighRotation<>0) Then RotateEntity(Light, xmlNodeAttributeValueGet(LighRotation, "pitch"), xmlNodeAttributeValueGet(LighRotation, "yaw"), xmlNodeAttributeValueGet(LighRotation, "roll"))
+								If (LighRotation<>0) Then RotateEntity(wLight\Entity, xmlNodeAttributeValueGet(LighRotation, "pitch"), xmlNodeAttributeValueGet(LighRotation, "yaw"), xmlNodeAttributeValueGet(LighRotation, "roll"))
 								LightCol = xmlNodeFind("color", SceneChildNode)
-								If (LightCol<>0) Then LightColor(Light, xmlNodeAttributeValueGet(LightCol, "r"), xmlNodeAttributeValueGet(LightCol, "g"), xmlNodeAttributeValueGet(LightCol, "b"))
-										
+								If (LightCol<>0) Then LightColor(wLight\Entity, xmlNodeAttributeValueGet(LightCol, "r"), xmlNodeAttributeValueGet(LightCol, "g"), xmlNodeAttributeValueGet(LightCol, "b"))
+									
+									
 							Case "object"
 								; Find out wich kind of object is is and act consecuently
 								Select xmlNodeAttributeValueGet(SceneChildNode, "type")
@@ -415,7 +427,7 @@
 	
 		; Once finished loading stage information, activate music, setup collisions and
 		; then, we're ready to go to next step.
-		PlaySound(Game\Stage\Properties\Music)
+		Channel_BackgroundMusic = PlaySound(Game\Stage\Properties\Music)
 
 		; Setup collisions within the environment.
 		Collisions(COLLISION_PLAYER, COLLISION_WORLD_POLYGON, 		2, 2)
@@ -542,3 +554,5 @@
 		; Flip
 		Flip(GAME_WINDOW_VSYNC)
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D

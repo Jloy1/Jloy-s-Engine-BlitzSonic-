@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -57,12 +57,13 @@
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 	; ---- Game global settings ----
-	Global 	GAME_TITLE$			=	"Sonic the Hedgehog"
+	Global	GAME_VERSION$		=	"0.01"
+	Global 	GAME_TITLE$			=	"Jloy's Engine (Development Build v" + GAME_VERSION$ + ")"
 	Global 	GAME_WINDOW_W		=	1024
 	Global 	GAME_WINDOW_H		=	786
 	Global	GAME_WINDOW_DEPTH	=	0
 	Global 	GAME_WINDOW_MODE	=	2
-	Global	GAME_WINDOW_SCALE#	=	Float(GAME_WINDOW_W)/640.0
+	Global	GAME_WINDOW_SCALE#	=	Float(GAME_WINDOW_W)/1080.0
 	Global	GAME_WINDOW_VSYNC	=	False
 
 	; ---- Gameplay global settings ----
@@ -154,7 +155,7 @@
 		If (Node_VSync$		 <> "") Then GAME_WINDOW_VSYNC = Int(Node_VSync$)
 
 		; ---- Calculate scale -----
-		GAME_WINDOW_SCALE# = Float(GAME_WINDOW_W)/640.0
+		;GAME_WINDOW_SCALE# = Float(GAME_WINDOW_W)/640.0
 
 	End Function
 
@@ -485,3 +486,5 @@
 		If (Node_RotationSpeedY$ <> "") Then Gameplay_Camera_RotationSpeedY# = Float#(Node_RotationSpeedY$)
 		If (Node_TargetPOV$      <> "") Then Gameplay_Camera_TargetPOV       = Int(Node_TargetPOV$)
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D

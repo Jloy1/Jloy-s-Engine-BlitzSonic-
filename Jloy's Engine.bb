@@ -142,8 +142,19 @@ MaskImage(menuCursor, 255, 0, 255)
 ;   ENTRY POINT
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 	
-	; Enter the main loop
-	mainLoop()
+	; Preload the needed tools to render objects
+	preLoad()
+	
+	Function preLoad()
+		; Set game title
+		AppTitle(GAME_TITLE$)
+		WindowHWND = SystemProperty("AppHWND")
+		InitDraw(SystemProperty("Direct3DDevice7"))
+		
+		; Enter the main loop
+		mainLoop()	
+	End Function
+	
 	Function mainLoop()
 		While(1)
 			Select (menuState)
@@ -170,6 +181,7 @@ MaskImage(menuCursor, 255, 0, 255)
 	Function gameRunLoop()
 		;If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
 		Game_Update()
+		If (KeyHit(KEY_P)) Then Game_End()
 	End Function
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -205,7 +217,7 @@ MaskImage(menuCursor, 255, 0, 255)
 		menuMaxPos = 2
 		
 		; Listen for the input
-		PerformMenuInput()
+		PerformMenuInput(0)
 		
 		; Clear the screen
 		Cls()

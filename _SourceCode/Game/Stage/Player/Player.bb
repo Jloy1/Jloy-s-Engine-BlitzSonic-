@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -205,11 +205,11 @@
 				p\Objects\Mesh 			= CopyEntity(Mesh_Sonic, Game\Stage\Root)
 				;ScaleEntity(p\Objects\Mesh, GAME_SCALE#, GAME_SCALE#, GAME_SCALE#)
 
-				p\Objects\Mesh_Balance	= FindChild(p\Objects\Mesh, "Bone01")
-				p\Objects\Mesh_Head 	= FindChild(p\Objects\Mesh, "Head")
-				p\Objects\Mesh_Arms 	= FindChild(p\Objects\Mesh, "Arms")
-				p\Objects\Mesh_Torso 	= FindChild(p\Objects\Mesh, "Torso")
-				p\Objects\Mesh_Legs 	= FindChild(p\Objects\Mesh, "Legs")
+				;p\Objects\Mesh_Balance	= FindChild(p\Objects\Mesh, "Bone01")
+				;p\Objects\Mesh_Head 	= FindChild(p\Objects\Mesh, "Head")
+				;p\Objects\Mesh_Arms 	= FindChild(p\Objects\Mesh, "Arms")
+				;p\Objects\Mesh_Torso 	= FindChild(p\Objects\Mesh, "Torso")
+				;p\Objects\Mesh_Legs 	= FindChild(p\Objects\Mesh, "Legs")
 
 				p\Objects\Mesh_Spindash = CopyEntity(Mesh_Sonic_Spindash, Game\Stage\Root)
 				p\Objects\Mesh_JumpBall = CopyEntity(Mesh_Sonic_JumpBall, p\Objects\Mesh)
@@ -237,16 +237,7 @@
 	; Player_Destroy
 	; =========================================================================================================
 	Function Player_Destroy(p.tPlayer)
-		FreeEntity(p\Objects\Entity)
-		FreeEntity(p\Objects\Mesh)
-		
-		Delete p\Motion\Speed
-		Delete p\Motion\Align
-		Delete p\Animation\Align
-		Delete p\Objects
-		Delete p\Motion
-		Delete p\Animation
-		Delete p\Flags
+
 	End Function
 
 
@@ -273,3 +264,5 @@
 		; Animate
 		Player_Animate(p, d)
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D
