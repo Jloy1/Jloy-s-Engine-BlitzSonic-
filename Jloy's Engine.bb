@@ -181,7 +181,7 @@ MaskImage(menuCursor, 255, 0, 255)
 	Function gameRunLoop()
 		;If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
 		Game_Update()
-		If (KeyHit(KEY_P)) Then Game_End()
+		If (KeyHit(KEY_P)) Then FlushKeys : Game_End()
 	End Function
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/

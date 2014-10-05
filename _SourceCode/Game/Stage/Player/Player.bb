@@ -148,13 +148,13 @@
 	Const ACTION_SPINDASH			= 3
 
 	; Common values
-	Const COMMON_XZACCELERATION#	= 0.024
-	Const COMMON_XZDECELERATION#	= 0.012
+	Const COMMON_XZACCELERATION#	= 0.032
+	Const COMMON_XZDECELERATION#	= 0.016
 	Const COMMON_SKIDDINGFACTOR#	= 0.005
-	Const COMMON_XZTOPSPEED#		= 2.6
-	Const COMMON_XZMAXSPEED#		= 7.5
-	Const COMMON_YACCELERATION#		= 0.04
-	Const COMMON_YTOPSPEED#			= -3.0
+	Const COMMON_XZTOPSPEED#		= 3.25
+	Const COMMON_XZMAXSPEED#		= 12.0
+	Const COMMON_YACCELERATION#		= 0.042
+	Const COMMON_YTOPSPEED#			= -6.0
 
 	; Motion values
 	Const MOTION_GROUND#			= 0.65
@@ -165,8 +165,8 @@
 	Const MOTION_WALL_DIRECTION#	= 0.3
 
 	; Jump values
-	Const JUMP_STRENGHT#			= 1.4
-	Const JUMP_STRENGHT_VARIABLE#	= 0.7
+	Const JUMP_STRENGHT#			= 1.5
+	Const JUMP_STRENGHT_VARIABLE#	= 0.6
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ; 	METHODS

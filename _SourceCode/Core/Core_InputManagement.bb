@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - Héctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "Coré" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -243,7 +243,12 @@
 		Input\Movement_AnalogX# = Input_RetrieveStatus(INPUT_BUTTON_RIGHT)-Input_RetrieveStatus(INPUT_BUTTON_LEFT)
 		Input\Movement_AnalogY# = Input_RetrieveStatus(INPUT_BUTTON_DOWN)-Input_RetrieveStatus(INPUT_BUTTON_UP)
 		Input\Movement_Pressure# = Sqr#(Input\Movement_AnalogX#*Input\Movement_AnalogX#+Input\Movement_AnalogY#*Input\Movement_AnalogY#)
+		; Square movement fix.
+		If (Input\Movement_Pressure# > 1.0) Then Input\Movement_Pressure# = 1.0
+		If (Input\Movement_Pressure# < -1.0) Then Input\Movement_Pressure# = -1.0
 		If (Input\Movement_Pressure# <> 0.0) Then Input\Movement_Direction# = WrapAngle#(ATan2#(Input\Movement_AnalogY#, Input\Movement_AnalogX#))
+		
+
 		
 		; ---- Update camera movement ----
 		Input\Camera_AnalogX# = Input_RetrieveStatus(INPUT_BUTTON_CAMERA_RIGHT)-Input_RetrieveStatus(INPUT_BUTTON_CAMERA_LEFT)
@@ -363,3 +368,6 @@
 		Return Result#
 		
 	End Function
+
+;~IDEal Editor Parameters:
+;~C#Blitz3D
