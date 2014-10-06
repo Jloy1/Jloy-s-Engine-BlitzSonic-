@@ -119,13 +119,21 @@ Include "_SourceCode\Systems\System_GameScript_Functions.bb"
 ;   MENU OBJECTS
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ; Different menu screens
+Const MENU_INTRO		= -1
 Const MENU_TITLE 		= 0
 Const MENU_MAIN 		= 1
 Const MENU_CHARSEL 		= 2
 Const MENU_GAMELOOP 	= 3
 	
 ; Current menu screen
-Global menuState 		= MENU_TITLE
+Global menuState 		= MENU_INTRO
+
+; Intro screen controls
+Global IntroLogo				= LoadImage("Interface\Menu\JloyLogo.png")
+Global MilliStart				= MilliSecs()
+Global CurrentMilli				= MilliSecs()
+Global IntroPlaySoundTrigger 	= 1750 ; Trigger after 2000ms.
+Global IntroSoundTriggered		= False
 
 ; Used to navigate menus
 Global menuPosition		= 0
@@ -135,9 +143,13 @@ Global menuMaxPos		= 0
 Global menuText01	= LoadAnimImage("Interface\Menu\TitleFont.png", 23, 17, 0, 39)
 Global menuCursor	= LoadAnimImage("Interface\Menu\MenuCursor.png", 20, 15, 0, 2)
 
+; Mask all our images
 MaskImage(menuText01, 255, 0, 255)
 MaskImage(menuCursor, 255, 0, 255)
+MaskImage(IntroLogo,  255, 0, 255)
 
+; Scale if we need to after the masking.
+ScaleImage(IntroLogo, 2, 2)
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   ENTRY POINT
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -158,6 +170,8 @@ MaskImage(menuCursor, 255, 0, 255)
 	Function mainLoop()
 		While(1)
 			Select (menuState)
+				Case MENU_INTRO
+					Menu_MenuIntro()
 				Case MENU_TITLE
 					Menu_MenuTitle()
 				Case MENU_MAIN
@@ -187,6 +201,34 @@ MaskImage(menuCursor, 255, 0, 255)
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   MENU SCREENS
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/	
+	
+	; =========================================================================================================
+	; Menu_MenuIntro
+	; =========================================================================================================
+	Function Menu_MenuIntro()
+		; Clear the screen
+		Cls()
+		
+		; Update current time.
+		CurrentMilli = MilliSecs()
+		
+		; Draw our logo.
+		DrawImage(IntroLogo, (GAME_WINDOW_W/2)-140, (GAME_WINDOW_H/2)-80)
+		
+		; Has the sound played? If not, play it when needed.
+		If ((IntroSoundTriggered = False) And (CurrentMilli - MilliStart >= IntroPlaySoundTrigger)) Then
+			IntroSoundTriggered = True
+			PlaySound(Sound_Ring)
+		End If
+
+		; If intro played for Xms, go to title
+		If (CurrentMilli - MilliStart >= IntroPlaySoundTrigger*2) Then
+			menuState = MENU_TITLE
+		End If
+		
+		; Flip the buffer
+		Flip()
+	End Function
 	
 	; =========================================================================================================
 	; Menu_MenuTitle
