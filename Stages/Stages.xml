@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
 <stagelist>
-	<stage folder="GreenHill"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill2"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill3"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill4"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill5"/>
+	<stage folder="GreenHill" name="[Vanilla] Green Hill6"/>
 </stagelist>

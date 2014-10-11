@@ -118,12 +118,25 @@ Include "_SourceCode\Systems\System_GameScript_Functions.bb"
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   MENU OBJECTS
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+; The stage list type
+Type tStageList
+	Field Name$
+	Field Folder$
+	Field ID
+End Type
+Global StageIDCounter = 0
+
+Global SelectedStage$
+Global SelectedCharacter
+
 ; Different menu screens
 Const MENU_INTRO		= -1
 Const MENU_TITLE 		= 0
 Const MENU_MAIN 		= 1
 Const MENU_CHARSEL 		= 2
-Const MENU_GAMELOOP 	= 3
+Const MENU_STAGESEL		= 3
+Const MENU_GAMELOOP 	= 4
+Const MENU_IGNOREARG	= 999 ;This is special in the stage list loading.
 	
 ; Current menu screen
 Global menuState 		= MENU_INTRO
@@ -132,7 +145,7 @@ Global menuState 		= MENU_INTRO
 Global IntroLogo				= LoadImage("Interface\Menu\JloyLogo.png")
 Global MilliStart				= MilliSecs()
 Global CurrentMilli				= MilliSecs()
-Global IntroPlaySoundTrigger 	= 1750 ; Trigger after 2000ms.
+Global IntroPlaySoundTrigger 	= 1500 ; Trigger after x ms.
 Global IntroSoundTriggered		= False
 
 ; Used to navigate menus
@@ -178,6 +191,8 @@ ScaleImage(IntroLogo, 2, 2)
 					Menu_MenuMain()
 				Case MENU_CHARSEL
 					Menu_CharacterSelect()
+				Case MENU_STAGESEL
+					Menu_StageSelect()
 				Case MENU_GAMELOOP
 					gameRunLoop()
 				Default	
@@ -188,6 +203,7 @@ ScaleImage(IntroLogo, 2, 2)
 	End Function
 
 	Function preLoadGame()
+		; Runs the Game_Startup an initiates the game loop.
 		Game_Startup()
 		menuState = MENU_GAMELOOP
 	End Function
@@ -331,13 +347,58 @@ ScaleImage(IntroLogo, 2, 2)
 		; Listen for the selection
 		If (KeyHit(KEY_ENTER)) Then 
 			Select (menuPosition)
-				Case 0
-					preLoadGame()
-				Case 1
+				Case 0 ;Sonic
+					SelectedCharacter = CHARACTER_SONIC
+					LoadStageList()
+				Case 1 ; Amy
 					PlaySound(Sound_Ring)
-				Case 2
+				Case 2 ; Tails
 					PlaySound(Sound_Ring)
 			End Select
+		End If
+		
+		; Flip the buffer
+		Flip()
+	End Function
+
+	; =========================================================================================================
+	; Menu_StageSelect
+	; =========================================================================================================
+	Function Menu_StageSelect()
+		; Set the max position of this menu
+		menuMaxPos = StageIDCounter-1
+		
+		; Listen for the input
+		PerformMenuInput(0)
+		
+		; Clear the screen
+		Cls()
+		
+		; Draw the background first
+		; <BACKGROUND IMAGE GOES HERE>
+		
+		; Next, render the text
+		RenderMenuText(GAME_WINDOW_W/2, 4, "Select a stage", True)
+		For stg.tStageList = Each tStageList
+			If (menuPosition = stg\ID) Then
+				RenderMenuText(60, 46+(stg\ID*21), stg\Name$, False, True)
+			Else
+				RenderMenuText(60, 46+(stg\ID*21), stg\Name$, False)
+			End If
+		Next
+		
+		; Listen for the selection
+		If (KeyHit(KEY_ENTER)) Then 
+			For stg.tStageList = Each tStageList
+				; If the ID is equal to the StageList ID, then we're good to go.
+				If (menuPosition = stg\ID) Then
+					SelectedStage$ = stg\Folder$
+				End If
+			Next
+			
+			; Now unload the stage list and start the game.
+			UnloadStageList()
+			preLoadGame()
 		End If
 		
 		; Flip the buffer
@@ -399,6 +460,8 @@ ScaleImage(IntroLogo, 2, 2)
 		If (centreAlign = True) Then 
 			xStart = x - (Len(textString$) * (9 + textTileOffset))
 			x = xStart
+		Else
+			xStart = x + 18
 		End If
 		
 		; Now go through each letter and select the tile to draw.
@@ -417,10 +480,60 @@ ScaleImage(IntroLogo, 2, 2)
 			; Add to the next offset. 
 			x = x + 18 + textTileOffset
 		Next
+		
+		; Yay, arrows for showing selection.
 		If (drawArrow = True) Then
 			DrawImage(menuCursor, xStart-40, y+1, 0)
 			DrawImage(menuCursor, x+20, y+1, 1)
 		End If
 	End Function
+	
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+;   EXTRA FUNCTIONS
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/		
+	; =========================================================================================================
+	; LoadStageList
+	; =========================================================================================================
+	Function LoadStageList(changeToMenuState=MENU_STAGESEL)
+		; This selects the XML file to read.
+		StageListRoot = xmlLoad("Stages/Stages.xml")
+		
+		; If there is any errors, execute a RuntimeError.
+		If (xmlErrorCount()>0) Then RuntimeError("An error while parsing the level list! Make sure the XML file is properly formatted. Location: 'Stages/Stages.xml'")
+
+		; For each node, populate a new node.
+		For i=1 To xmlNodeChildCount(StageListRoot)
+			Child = xmlNodeChild(StageListRoot, i)
+			
+			; We found a stage. Load it.
+			If (xmlNodeNameGet(Child)="stage") Then
+				stg.tStageList = New tStageList
+				stg\Name$ = xmlNodeAttributeValueGet(Child, "name")
+				stg\Folder$ = xmlNodeAttributeValueGet(Child, "folder")
+				stg\ID = StageIDCounter
+				StageIDCounter = StageIDCounter + 1
+			End If 
+		Next
+		xmlNodeDelete(StageListRoot)
+		
+		If (changeToMenuState = MENU_IGNOREARG) Then 
+			; This cannot ignore args, so force it to default if selected.
+			menuState = MENU_STAGESEL
+		Else
+			menuState = changeToMenuState
+		End If
+	End Function
+	
+	; =========================================================================================================
+	; UnloadStageList
+	; =========================================================================================================
+	Function UnloadStageList(changeToMenuState=MENU_IGNOREARG)
+		; Delete all StageList entries.
+		For stg.tStageList = Each tStageList
+			Delete stg
+		Next
+		If (changeToMenuState <> MENU_IGNOREARG) Then menuStage = changeToMenuState
+	End Function	
+	
 ;~IDEal Editor Parameters:
 ;~C#Blitz3D

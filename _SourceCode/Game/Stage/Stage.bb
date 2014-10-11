@@ -97,7 +97,7 @@
 		; At startup, load up current stage from the list. First, obtain the final path to the stage folder
 		; and hold on a string. Then, parse the Stage.xml file to find out all the specifications
 		; and objects on the stage.
-		Path$		= "Stages/"+Game\Stage\List\Folder$+"/"
+		Path$		= "Stages/"+SelectedStage$+"/"
 
 		; Create root entity for all the stage entities
 		Game\Stage\Root 			= CreatePivot()
