@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -144,7 +144,7 @@
 		End If
 		
 		; Player collided with ring
-		If (Abs(EntityX(p\Objects\Entity) - o\Position\x) < 3.5) And (Abs(EntityY(p\Objects\Entity) - o\Position\y) < 3.5) And (Abs(EntityZ(p\Objects\Entity) - o\Position\z) < 3.5) Then
+		If (Abs(EntityX(p\Objects\Entity) - o\Position\x) < 4.75) And (Abs(EntityY(p\Objects\Entity) - o\Position\y) < 4.75) And (Abs(EntityZ(p\Objects\Entity) - o\Position\z) < 4.75) Then
 		
 			; Add to ring counter
 			Game\Gameplay\Rings = Game\Gameplay\Rings + 1
@@ -442,3 +442,5 @@
 		Next	
 	
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D

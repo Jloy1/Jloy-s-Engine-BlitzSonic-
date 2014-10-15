@@ -130,6 +130,16 @@
 		Field Direction#
 		Field Tilt#
 		Field Align.tVector
+		Field CharTilt.tPlayer_AnimTilt
+	End Type 
+	
+	; ---------------------------------------------------------------------------------------------------------	
+	; tPlayer_AnimTilt
+	; ---------------------------------------------------------------------------------------------------------
+	Type tPlayer_AnimTilt
+		Field PreTilt#
+		Field CurTilt#
+		Field Tilt#
 	End Type 
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -185,6 +195,7 @@
 		p\Motion  	= New tPlayer_Motion
 		p\Flags		= New tPlayer_Flags
 		p\Animation	= New tPlayer_Animation
+		p\Animation\CharTilt = New tPlayer_AnimTilt
 		
 		p\Motion\Speed    = Vector(0, 0, 0)
 		p\Motion\Align 	  = Vector(0, 1, 0)
@@ -249,7 +260,11 @@
 		Player_Motion(p, d)
 		
 		; Handle actions
-		Player_Handle(p, d)
+		;Player_Handle(p, d)
+		Player_Handle_Modern(p, d)
+		
+		
+		; Perform actions
 		Select p\Action
 			Case ACTION_COMMON
 				Player_Action_Common(p, d)
@@ -263,6 +278,10 @@
 
 		; Animate
 		Player_Animate(p, d)
+		
+		; Perform player tilting
+		Player_MovementTilt(p, d)
 	End Function
+	
 ;~IDEal Editor Parameters:
 ;~C#Blitz3D

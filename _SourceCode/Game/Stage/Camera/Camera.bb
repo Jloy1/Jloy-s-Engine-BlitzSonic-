@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -191,6 +191,18 @@
 				; and the player only changes his position.
 				c\TargetRotation\y# = c\TargetRotation\y#-Input\Movement_AnalogX#*Gameplay_Camera_RotationSpeedX#*d\Delta#
 				c\TargetRotation\x# = c\TargetRotation\x#-Input\Camera_AnalogY#*Gameplay_Camera_RotationSpeedY#*d\Delta#
+			
+;			Case PLAYER_MODE_MODERN
+;				; This is the new follow camera mode. This will try and simulate the Sonic Generations camera
+;				; to some degree. This is best used with an analog controller or joystick.
+;				;[NOTE: THIS MODE DOES NOT SUPPORT TARGET NORMALS ALIGNMENT]
+;				
+;				; This code correctly moves the camera.
+;				c\TargetRotation\x# = Clamp#(180+c\TargetRotation\x+Input\Camera_AnalogY#*Gameplay_Camera_RotationSpeedY#*d\Delta, 100, 260)-180
+;				c\TargetRotation\y# = EntityYaw#(c\Entity)+360
+;				RotationX# = Cos(Input\Movement_Direction)*Input\Movement_Pressure
+;				RotationY# = Sin(Input\Movement_Direction)*Input\Movement_Pressure
+				
 				
 		End Select
 
@@ -227,3 +239,5 @@
 		MoveEntity(c\Entity, 0, c\DistanceFromCamera#*0.25, -c\DistanceFromCamera#)
 				
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D

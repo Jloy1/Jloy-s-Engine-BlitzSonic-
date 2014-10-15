@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -58,10 +58,14 @@
 
 	; ---- Meshes ----
 	Global Mesh_Sonic					= LoadAnimMesh("Characters/Sonic/Sonic.b3d")
-	RecursiveExtractAnimSeq(Mesh_Sonic,	0,		223)	; Idle
-	RecursiveExtractAnimSeq(Mesh_Sonic,	225,	248)	; Walking
-	RecursiveExtractAnimSeq(Mesh_Sonic,	250,	258)	; Running
-	RecursiveExtractAnimSeq(Mesh_Sonic,	259,	266)	; Spinning
+	RecursiveExtractAnimSeq(Mesh_Sonic,	0,		100)	; Idle
+	RecursiveExtractAnimSeq(Mesh_Sonic,	101,	140)	; Walk
+	RecursiveExtractAnimSeq(Mesh_Sonic,	141,	180)	; Jog
+	RecursiveExtractAnimSeq(Mesh_Sonic, 181,	220)	; Run
+	RecursiveExtractAnimSeq(Mesh_Sonic,	221,	260)	; Sprint
+	RecursiveExtractAnimSeq(Mesh_Sonic,	261,	276)	; Spin
+	RecursiveExtractAnimSeq(Mesh_Sonic,	277,	290)	; Fall
+	RecursiveExtractAnimSeq(Mesh_Sonic,	291,	304)	; Rise
 	HideEntity(Mesh_Sonic)
 	
 	Global Mesh_Sonic_Spindash			= LoadAnimMesh("Characters/Sonic/Spindash.b3d")
@@ -69,3 +73,6 @@
 
 	Global Mesh_Sonic_JumpBall			= LoadAnimMesh("Characters/Sonic/Jump.b3d")
 	HideEntity(Mesh_Sonic_JumpBall)
+
+;~IDEal Editor Parameters:
+;~C#Blitz3D

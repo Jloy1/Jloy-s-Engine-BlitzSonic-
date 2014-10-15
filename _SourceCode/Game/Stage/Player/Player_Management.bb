@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - Héctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "Coré" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -66,6 +66,7 @@
 	Const PLAYER_MODE_MOUSELOOK		= 0
 	Const PLAYER_MODE_ANALOG		= 1
 	Const PLAYER_MODE_SRB			= 2
+	Const PLAYER_MODE_MODERN		= 3
 	
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ; 	METHODS
@@ -88,6 +89,9 @@
 			Case PLAYER_MODE_SRB
 				MotionDirection# = p\Objects\Camera\Rotation\y#-90*Input\Movement_AnalogY#
 				MotionPressure#  = Input\Movement_Pressure#*Abs(Input\Movement_AnalogY#)
+;			Case PLAYER_MODE_MODERN
+;				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
+;				MotionPressure#  = Input\Movement_Pressure#
 		End Select
 		
 		; Declarate acceleration and speed vectors and setup.
@@ -95,6 +99,10 @@
 		Speed.tVector 		 		= Vector(p\Motion\Speed\x#, 0, p\Motion\Speed\z#)
 		SpeedCompensation.tVector	= Vector(0, 0, 0)
 		Speed_Length#				= Vector_Length#(Speed)
+		
+		; Debugging Tools
+		DEBUG_AccelerationVector =  Vector_Copy(Acceleration)
+		DEBUG_SpeedVector = Vector_Copy(Speed)
 		
 		; Disable skidding flag
 		p\Flags\Skidding = False
@@ -160,6 +168,10 @@
 					SpeedCompensation\x# = (Speed\x#*21+DeltaCos#*Speed_Length#)/22*0.98
 					SpeedCompensation\z# = (Speed\z#*21+DeltaSin#*Speed_Length#)/22*0.98					
 				EndIf
+				
+				; Debugging tools
+				DEBUG_SpeedComp = Vector_Copy(SpeedCompensation)
+				
 				
 				Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
 				
@@ -340,3 +352,182 @@
 		If (v\y# > 0) Then : v\y# = Max#(v\y#-SubY#, 0) : Else  : v\y# = Min#(v\y#-SubY#, 0) : End If
 		If (v\z# > 0) Then : v\z# = Max#(v\z#-SubZ#, 0) : Else  : v\z# = Min#(v\z#-SubZ#, 0) : End If
 	End Function 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	; =========================================================================================================
+	; Player_Handle
+	; =========================================================================================================
+	Function Player_Handle_Modern(p.tPlayer, d.tDeltaTime)
+		; Depending on current mode, the pressed direction uses a different method. Mouselook and analog are
+		; quite similar in this aspect.
+		Select Gameplay_Control_Mode
+			Case PLAYER_MODE_MOUSELOOK
+				MotionDirection# = p\Objects\Camera\Rotation\y#-Input\Movement_Direction#
+				MotionPressure#  = Input\Movement_Pressure#
+			Case PLAYER_MODE_ANALOG
+				MotionDirection# = p\Objects\Camera\Rotation\y#-Input\Movement_Direction#
+				MotionPressure#  = Input\Movement_Pressure#
+			Case PLAYER_MODE_SRB
+				MotionDirection# = p\Objects\Camera\Rotation\y#-90*Input\Movement_AnalogY#
+				MotionPressure#  = Input\Movement_Pressure#*Abs(Input\Movement_AnalogY#)
+;			Case PLAYER_MODE_MODERN
+;				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
+;				MotionPressure#  = Input\Movement_Pressure#
+		End Select
+		
+		; Declarate acceleration and speed vectors and setup.
+		Acceleration.tVector 		= Vector(Cos#(MotionDirection#)*MotionPressure#, 0, Sin#(MotionDirection#)*MotionPressure#)
+		Speed.tVector 		 		= Vector(p\Motion\Speed\x#, 0, p\Motion\Speed\z#)
+		SpeedNormX# 				= ((Acceleration\x#+Speed\x#)/2.0)*d\Delta
+		SpeedNormZ# 				= ((Acceleration\z#+Speed\z#)/2.0)*d\Delta
+		SpeedNormal.tVector 		= Vector(SpeedNormX#, 0, SpeedNormZ#)
+		SpeedCompensation.tVector	= Vector(0, 0, 0)
+		Speed_Length#				= Vector_Length#(Speed)
+		
+		; Debugging Tools
+		DEBUG_AccelerationVector =  Vector_Copy(Acceleration)
+		DEBUG_SpeedVector = Vector_Copy(Speed)
+		
+		; Disable skidding flag
+		p\Flags\Skidding = False
+
+		; If there exists acceleration, handle the acceleration and change to new
+		; direction, preserving the momentum in the needed cases.
+		If (Vector_Length#(Acceleration)) Then
+
+			; Calculate delta cos and sin
+			DeltaCos# = Cos#(p\Animation\Direction#-90)
+			DeltaSin# = Sin#(p\Animation\Direction#-90)
+			
+			; Change Player's direction. Depending on current motion orientation and speed, this
+			; direction change would be done instantly or smoothly. This rotation isn't done entirely
+			; based on delta, because it would appear as if the character automatically rotates when
+			; at low FPS xD
+			If (Speed_Length# < 0.1) Then
+				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*3)/4)*1.0001,-(SpeedNormal\z#+DeltaSin#*3)/4)
+			Else
+				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*5)/6)*1.0001,-(SpeedNormal\z#+DeltaSin#*5)/6)
+			End If
+			
+			; Depending on the dot product between current direction and new motion direction
+			DotProduct# = Vector_DotProductNormalized#(Acceleration, Speed)
+			If (DotProduct# < 0.0) Then
+					
+				; If there's an opposite change of motion direction, completely 
+				If (p\Motion\Ground = True) Then
+					Vector_MultiplyByScalar(Acceleration, 1.2)
+
+					If (Speed_Length#>0.4) Then
+						p\Flags\Skidding = True
+						If (ChannelPlaying(Channel_Skidding)=False) Then Channel_Skidding = PlaySound(Sound_Skidding)
+					End If
+				Else	
+					Player_SubstractTowardsZero(Speed, 0.02*d\Delta#)
+				End If
+
+				
+				
+			Else If (DotProduct# < 0.4) Then
+			
+				; If there's a harsh change in motion direction, decrease
+				; greatly the motion in current direction and increase acceleration
+				; on the new.
+				If (p\Motion\Ground = True) Then
+					SpeedCompensation\x# = (Speed\x#*33+DeltaCos#*Speed_Length#)/34*0.96
+					SpeedCompensation\z# = (Speed\z#*33+DeltaSin#*Speed_Length#)/34*0.96
+					
+					Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
+				Else
+					Player_SubstractTowardsZero(Speed, 0.02*d\Delta#)
+				EndIf
+				
+				Vector_MultiplyByScalar(Acceleration, 1.2)
+				
+			Else If (DotProduct# < 0.95) Then
+
+				; If there's a mild change in direction, slighty decresae
+				; the motion in current direction.
+				If (p\Motion\Ground = True) Then
+					SpeedCompensation\x# = (Speed\x#*19+DeltaCos#*Speed_Length#)/20
+					SpeedCompensation\z# = (Speed\z#*19+DeltaSin#*Speed_Length#)/20
+				Else
+					SpeedCompensation\x# = (Speed\x#*21+DeltaCos#*Speed_Length#)/22*0.98
+					SpeedCompensation\z# = (Speed\z#*21+DeltaSin#*Speed_Length#)/22*0.98					
+				EndIf
+				
+				; Debugging tools
+				DEBUG_SpeedComp = Vector_Copy(SpeedCompensation)
+				
+				
+				Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
+				
+			End If
+			
+			
+			
+			If (Speed_Length# <= COMMON_XZTOPSPEED#) Then
+				Vector_MultiplyByScalar(Acceleration, COMMON_XZACCELERATION#*d\Delta#)
+				Vector_Add(Speed, Acceleration)
+			End If
+		End If
+
+		; Set back the ground speed
+		p\Motion\Speed\x# = Speed\x# : p\Motion\Speed\z# = Speed\z#
+		Delete Acceleration : Delete Speed : Delete SpeedCompensation
+
+
+		; If the character's on the ground, apply deceleration based on the current slope, and
+		; check if he has not enough speed to go further.
+		If (p\Motion\Ground=True) Then Player_HandleAngleAcceleration(p, d)
+
+		
+		; However, decelerate if no acceleration exists.
+		If (Speed_Length#>0.0) Then
+			If (p\Motion\Speed\x#>0.0) Then
+				p\Motion\Speed\x# = Max#(p\Motion\Speed\x#-(p\Motion\Speed\x#/Speed_Length#)*COMMON_XZDECELERATION#*d\Delta#, 0.0)
+			Else
+				p\Motion\Speed\x# = Min#(p\Motion\Speed\x#-(p\Motion\Speed\x#/Speed_Length#)*COMMON_XZDECELERATION#*d\Delta#, 0.0)
+			End If
+			If (p\Motion\Speed\z#>0.0) Then
+				p\Motion\Speed\z# = Max#(p\Motion\Speed\z#-(p\Motion\Speed\z#/Speed_Length#)*COMMON_XZDECELERATION#*d\Delta#, 0.0)
+			Else
+				p\Motion\Speed\z# = Min#(p\Motion\Speed\z#-(p\Motion\Speed\z#/Speed_Length#)*COMMON_XZDECELERATION#*d\Delta#, 0.0)
+			End If 
+		End If
+		
+
+		; Manage Y speeds
+		If (p\Motion\Ground = False) Then
+			p\Motion\Speed\y# = Max(p\Motion\Speed\y#-(COMMON_YACCELERATION#*d\Delta), COMMON_YTOPSPEED#)
+		Else
+			p\Motion\Speed\y# = 0
+		End If 
+	End Function	
+	
+	
+	
+;~IDEal Editor Parameters:
+;~C#Blitz3D

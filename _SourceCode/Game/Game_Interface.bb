@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -80,7 +80,17 @@
 
 			; Render FPS
 			Interface_Number(Game\Others\FPS,					500*GAME_WINDOW_SCALE#, 30*GAME_WINDOW_SCALE#,		0, 1)
-
+			
+			; DEBUG STUFF
+			For d.tDeltaTime = Each tDeltaTime
+				Color(0,0,0)
+				Rect(0, GAME_WINDOW_H-50, GAME_WINDOW_W, 50)
+				Color(255,255,255)
+				Text(4, GAME_WINDOW_H-46,    "Motion DotProduct: " + Vector_DotProductNormalized#(DEBUG_AccelerationVector, DEBUG_SpeedVector))
+				Text(4, GAME_WINDOW_H-46+12, "        SpeedComp: " + Vector_Length#(DEBUG_SpeedComp)*d\Delta)
+				;Text(4, GAME_WINDOW_H-46+24, "     SpeedComp(z): " + DEBUG_SpeedComp\z#)
+			Next	
+			
 			; If on pause mode, render pause
 			If (Input_Lock = False) Then
 				; Setup rendering methods
@@ -97,6 +107,7 @@
 				
 				DrawImageEx(Interface_Pause, GAME_WINDOW_W Shr 1, GAME_WINDOW_H Shr 1)
 			End If
+			
 		EndDraw()
 	End Function
 
@@ -115,3 +126,14 @@
 			x = x+21*GAME_WINDOW_SCALE#
 		Next
 	End Function
+	
+	
+	
+	; ---------------------------------------------------------------------------------------------------------
+	; Debug Tools (Will be deleted)
+	; ---------------------------------------------------------------------------------------------------------	
+	Global DEBUG_AccelerationVector.tVector = New tVector
+	Global DEBUG_SpeedVector.tVector = New tVector
+	Global DEBUG_SpeedComp.tVector = New tVector
+;~IDEal Editor Parameters:
+;~C#Blitz3D

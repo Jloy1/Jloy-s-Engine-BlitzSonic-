@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - HÈctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "CorÈ" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorÅE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -101,8 +101,9 @@
 
 		; Change direction of the mesh
 		PositionEntity(p\Objects\Mesh, EntityX(p\Objects\Entity), EntityY(p\Objects\Entity), EntityZ(p\Objects\Entity))
-		RotateEntity(p\Objects\Mesh, 0, p\Animation\Direction#, 0)
+		RotateEntity(p\Objects\Mesh, 0, p\Animation\Direction#, p\Animation\CharTilt\Tilt#)
 		AlignToVector(p\Objects\Mesh, p\Animation\Align\x#, p\Animation\Align\y#, p\Animation\Align\z#, 2)
+		RotateEntity(p\Objects\Mesh, EntityPitch#(p\Objects\Mesh), EntityYaw#(p\Objects\Mesh), EntityRoll#(p\Objects\Mesh) + p\Animation\CharTilt\Tilt#)
 
 		; Update shadow
 		If (LinePick(EntityX(p\Objects\Entity), EntityY(p\Objects\Entity), EntityZ(p\Objects\Entity), 0, -OMEGA#, 0)<>0) Then
@@ -308,3 +309,5 @@
 		p\Motion\Speed\y# = TFormedY#()
 		p\Motion\Speed\z# = TFormedZ#()
 	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D

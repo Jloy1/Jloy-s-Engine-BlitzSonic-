@@ -209,7 +209,7 @@ ScaleImage(IntroLogo, 2, 2)
 	End Function
 
 	Function gameRunLoop()
-		;If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then Exit
+		If (KeyHit(KEY_ESCAPE) And Input_Lock = False) Then End ; Temporary to exit game
 		Game_Update()
 		If (KeyHit(KEY_P)) Then FlushKeys : Game_End()
 	End Function

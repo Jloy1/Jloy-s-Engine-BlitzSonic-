@@ -28,7 +28,7 @@
 ;
 ; The BlitzSonic Team:
 ; - Héctor "Damizean" (elgigantedeyeso at gmail dot com)
-; - Mark "Coré" (mabc_bh at yahoo dot com dot br)
+; - Mark "CorE (mabc_bh at yahoo dot com dot br)
 ; - Streak Thunderstorm
 ; - Mista ED
 ;
@@ -52,6 +52,11 @@
 ;                                                                                                              ;
 ;==============================================================================================================;
 
+	; Tilting consts
+	Const TILT_ANGLECLAMP	= 25
+	Const TILT_NORMALISETIME = 1.2
+
+
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ;   METHODS
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -63,26 +68,39 @@
 		; Change animation depending on action
 		Select p\Action
 			Case ACTION_COMMON
+				; Get the current speed of the character.
 				SpeedLength# = Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)
-
+				
+				; Do the animations depending on if we are grounded or not.
 				If (p\Motion\Ground = True) Then 
-					p\Animation\Animation = 0
-					If (SpeedLength# > 0.0)  Then p\Animation\Animation = 1
-					If (SpeedLength# > 2.30) Then p\Animation\Animation = 2
+					p\Animation\Animation = 0 ; Idle
+					If (SpeedLength# > 0.0) Then p\Animation\Animation = 1	; Walk
+					If (SpeedLength# > 1.2) Then p\Animation\Animation = 2	; Jog
+					If (SpeedLength# > 2.6) Then p\Animation\Animation = 3	; Run
+					If (SpeedLength# > 3.5) Then p\Animation\Animation = 4	; Sprint
+				Else
+					; Arial animations
+					If (p\Motion\Speed\y# > 0.35) Then
+						p\Animation\Animation = 7 ; Rise
+					Else If (p\Motion\Speed\y# < -0.35)
+						p\Animation\Animation = 6 ; Fall
+					Else
+						p\Animation\Animation = 5 ; Spin
+					End If
 				End If
 			Case ACTION_JUMP
-				p\Animation\Animation = 3
+				p\Animation\Animation = 5 ; Spin
 			Case ACTION_CROUCH
-				p\Animation\Animation = 1
+				p\Animation\Animation = 1 ; Placeholder: Idle
 			Case ACTION_SPINDASH
-				p\Animation\Animation = 3
+				p\Animation\Animation = 5 ; Spin
 		End Select
 
 		; If the animation changed, animate new
 		If (p\Animation\Animation<>p\Animation\PreviousAnimation) Then
 			Select p\Animation\Animation
 				Case 0
-					RecursiveAnimate(p\Objects\Mesh, 1, 0.2, 1, 8)
+					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 1, 8)
 				Case 1
 					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 2, 8)
 					p\Animation\Time# = 0.0
@@ -90,7 +108,17 @@
 					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 3, 9)
 					p\Animation\Time# = 0.0
 				Case 3
-					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 4, 8)
+					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 4, 9)
+					p\Animation\Time# = 0.0
+				Case 4
+					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 5, 9)
+					p\Animation\Time# = 0.0
+				Case 5
+					RecursiveAnimate(p\Objects\Mesh, 1, 1.0, 6, 3)
+				Case 6
+					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 7, 3)
+				Case 7
+					RecursiveAnimate(p\Objects\Mesh, 1, 0.4, 8, 3)
 			End Select
 			
 			p\Animation\PreviousAnimation = p\Animation\Animation
@@ -99,8 +127,17 @@
 		; Depending on animation, change animation speed
 		Select p\Animation\Animation
 			Case 1
-				p\Animation\Time# = p\Animation\Time#+Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)*0.53*d\Delta
+				p\Animation\Time# = p\Animation\Time#+Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)*0.85*d\Delta
 				RecursiveSetAnimTime(p\Objects\Mesh, p\Animation\Time#, 2)
+			Case 2
+				p\Animation\Time# = p\Animation\Time#+Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)*0.675*d\Delta
+				RecursiveSetAnimTime(p\Objects\Mesh, p\Animation\Time#, 3)
+			Case 3
+				p\Animation\Time# = p\Animation\Time#+Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)*0.595*d\Delta
+				RecursiveSetAnimTime(p\Objects\Mesh, p\Animation\Time#, 4)
+			Case 4
+				p\Animation\Time# = p\Animation\Time#+Sqr#(p\Motion\Speed\x#^2+p\Motion\Speed\z#^2)*0.53*d\Delta
+				RecursiveSetAnimTime(p\Objects\Mesh, p\Animation\Time#, 5)
 		End Select
 
 		; On spinning animation, show ball
@@ -114,3 +151,31 @@
 		; Update normals
 		RecursiveUpdateNormals(p\Objects\Mesh)
 	End Function
+	
+	Function Player_MovementTilt(p.tPlayer, d.tDeltaTime)
+		; Character Tilt
+		p\Animation\CharTilt\PreTilt# = p\Animation\CharTilt\CurTilt# ;Direction from the previous frame. (eg: previous was 17 deg)
+		p\Animation\CharTilt\CurTilt# = p\Animation\Direction# ;Current direction. (eg: now is 15 deg)
+		
+		; What is the angle difference?
+		differ# = (p\Animation\CharTilt\CurTilt# - p\Animation\CharTilt\PreTilt#) ; (eg: 2 difference. Yay.)
+		
+		; Clamping
+		If (differ# > 180) Then
+			differ2# = differ# - 360.0
+		Else If (differ# < -180) Then ; Angle from Negative to Positive (Add 360)
+			differ2# = differ# + 360.0
+		Else 
+			differ2# = differ#
+		End If
+		
+		; Set it up to allow for tilting. This part is sensitive to FPS change, so be careful.
+		p\Animation\CharTilt\Tilt# = p\Animation\CharTilt\Tilt# - (differ2#)
+		p\Animation\CharTilt\Tilt# = p\Animation\CharTilt\Tilt# / Clamp#((TILT_NORMALISETIME*d\Delta), 1.1, 99999) ; Reduce the value as the player stops turning. With clamping...
+		
+		; Cap the tilt to x degrees both ways. More clamping.
+		If p\Animation\CharTilt\Tilt# > TILT_ANGLECLAMP Then p\Animation\CharTilt\Tilt# = TILT_ANGLECLAMP
+		If p\Animation\CharTilt\Tilt# < -TILT_ANGLECLAMP Then p\Animation\CharTilt\Tilt# = -TILT_ANGLECLAMP
+	End Function
+;~IDEal Editor Parameters:
+;~C#Blitz3D
