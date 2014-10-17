@@ -23,7 +23,7 @@
         <bind action="camera_zoomout" device="mouse"    button="wheel+"  altdevice="none" altbutton="none"/>
     </input>
     <gameplay>
-        <control mode="0"/>
+        <control mode="3"/>
 		<camera smoothness="1.0" targetpov="1" rotation_x="170" rotation_y="0" rotation_speed_x="20" rotation_speed_y="20" near="3.0" far="400"/>
     </gameplay>
 </configuration>

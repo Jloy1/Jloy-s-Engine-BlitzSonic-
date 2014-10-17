@@ -69,6 +69,17 @@
 	Const PLAYER_MODE_MODERN		= 3
 	
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+; 	MOVEMENT CONFIGURATION
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/	
+	
+	Const MOVEMENT_TURNRATE#	 	= 4.8 ; Defaults to 3.0.
+	
+	; Lower = better turning power
+	Const MOVEMENT_SPEEDCOMP_HIGH#	= 7.92 ; Defaults to 33.0.
+	Const MOVEMENT_SPEEDCOMP_MID#	= 5.8 ; Defaults to 19.0.
+	Const MOVEMENT_SPEEDCOMP_LOW#	= 3.75 ; Defaults to 8.0.
+	
+; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ; 	METHODS
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
@@ -89,9 +100,9 @@
 			Case PLAYER_MODE_SRB
 				MotionDirection# = p\Objects\Camera\Rotation\y#-90*Input\Movement_AnalogY#
 				MotionPressure#  = Input\Movement_Pressure#*Abs(Input\Movement_AnalogY#)
-;			Case PLAYER_MODE_MODERN
-;				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
-;				MotionPressure#  = Input\Movement_Pressure#
+			Case PLAYER_MODE_MODERN
+				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
+				MotionPressure#  = Input\Movement_Pressure#
 		End Select
 		
 		; Declarate acceleration and speed vectors and setup.
@@ -245,9 +256,9 @@
 		; Jump when pressed and if on ground
 		If (Input\Pressed\ActionA And p\Motion\Ground=True) Then			
 			p\Action = ACTION_JUMP
-			p\Motion\Speed\x# = p\Motion\Speed\x#*0.7
+			p\Motion\Speed\x# = p\Motion\Speed\x#*0.995
 			p\Motion\Speed\y# = JUMP_STRENGHT#
-			p\Motion\Speed\z# = p\Motion\Speed\z#*0.7
+			p\Motion\Speed\z# = p\Motion\Speed\z#*0.995
 			Player_ConvertGroundToAir(p)
 			p\Motion\Ground = False
 			
@@ -378,7 +389,7 @@
 	
 	
 	; =========================================================================================================
-	; Player_Handle
+	; Player_Handle_Modern
 	; =========================================================================================================
 	Function Player_Handle_Modern(p.tPlayer, d.tDeltaTime)
 		; Depending on current mode, the pressed direction uses a different method. Mouselook and analog are
@@ -393,9 +404,9 @@
 			Case PLAYER_MODE_SRB
 				MotionDirection# = p\Objects\Camera\Rotation\y#-90*Input\Movement_AnalogY#
 				MotionPressure#  = Input\Movement_Pressure#*Abs(Input\Movement_AnalogY#)
-;			Case PLAYER_MODE_MODERN
-;				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
-;				MotionPressure#  = Input\Movement_Pressure#
+			Case PLAYER_MODE_MODERN
+				MotionDirection# = EntityYaw#(p\Objects\Camera\Entity)-Input\Movement_Direction#
+				MotionPressure#  = Input\Movement_Pressure#
 		End Select
 		
 		; Declarate acceleration and speed vectors and setup.
@@ -427,9 +438,9 @@
 			; based on delta, because it would appear as if the character automatically rotates when
 			; at low FPS xD
 			If (Speed_Length# < 0.1) Then
-				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*3)/4)*1.0001,-(SpeedNormal\z#+DeltaSin#*3)/4)
+				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*MOVEMENT_TURNRATE#)/(MOVEMENT_TURNRATE#+1))*1.0001,-(SpeedNormal\z#+DeltaSin#*MOVEMENT_TURNRATE#)/(MOVEMENT_TURNRATE#+1))
 			Else
-				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*5)/6)*1.0001,-(SpeedNormal\z#+DeltaSin#*5)/6)
+				p\Animation\Direction# = ATan2(((SpeedNormal\x#+DeltaCos#*(MOVEMENT_TURNRATE#+2))/(MOVEMENT_TURNRATE#+3))*1.0001,-(SpeedNormal\z#+DeltaSin#*(MOVEMENT_TURNRATE#+2))/(MOVEMENT_TURNRATE#+3))
 			End If
 			
 			; Depending on the dot product between current direction and new motion direction
@@ -450,14 +461,14 @@
 
 				
 				
-			Else If (DotProduct# < 0.4) Then
+			Else If (DotProduct# < 0.2) Then
 			
 				; If there's a harsh change in motion direction, decrease
 				; greatly the motion in current direction and increase acceleration
 				; on the new.
 				If (p\Motion\Ground = True) Then
-					SpeedCompensation\x# = (Speed\x#*33+DeltaCos#*Speed_Length#)/34*0.96
-					SpeedCompensation\z# = (Speed\z#*33+DeltaSin#*Speed_Length#)/34*0.96
+					SpeedCompensation\x# = (Speed\x#*MOVEMENT_SPEEDCOMP_HIGH#+DeltaCos#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_HIGH#+1)*0.96	;0.96
+					SpeedCompensation\z# = (Speed\z#*MOVEMENT_SPEEDCOMP_HIGH#+DeltaSin#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_HIGH#+1)*0.96
 					
 					Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
 				Else
@@ -465,25 +476,43 @@
 				EndIf
 				
 				Vector_MultiplyByScalar(Acceleration, 1.2)
+				;Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
+				
+			Else If (DotProduct# < 0.6) Then
+			
+				; If there's a harsh change in motion direction, decrease
+				; greatly the motion in current direction and increase acceleration
+				; on the new.
+				If (p\Motion\Ground = True) Then
+					SpeedCompensation\x# = (Speed\x#*MOVEMENT_SPEEDCOMP_MID#+DeltaCos#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_MID#+1)*0.96 ; 0.96
+					SpeedCompensation\z# = (Speed\z#*MOVEMENT_SPEEDCOMP_MID#+DeltaSin#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_MID#+1)*0.96
+					
+					Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
+				Else
+					Player_SubstractTowardsZero(Speed, 0.02*d\Delta#)
+				EndIf
+				
+				Vector_MultiplyByScalar(Acceleration, 1.1)				
+				;Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
+				
 				
 			Else If (DotProduct# < 0.95) Then
 
-				; If there's a mild change in direction, slighty decresae
+				; If there's a medium change in direction, decresae
 				; the motion in current direction.
 				If (p\Motion\Ground = True) Then
-					SpeedCompensation\x# = (Speed\x#*19+DeltaCos#*Speed_Length#)/20
-					SpeedCompensation\z# = (Speed\z#*19+DeltaSin#*Speed_Length#)/20
+					SpeedCompensation\x# = (Speed\x#*MOVEMENT_SPEEDCOMP_LOW#+DeltaCos#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_LOW#+1)
+					SpeedCompensation\z# = (Speed\z#*MOVEMENT_SPEEDCOMP_LOW#+DeltaSin#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_LOW#+1)
 				Else
-					SpeedCompensation\x# = (Speed\x#*21+DeltaCos#*Speed_Length#)/22*0.98
-					SpeedCompensation\z# = (Speed\z#*21+DeltaSin#*Speed_Length#)/22*0.98					
+					SpeedCompensation\x# = (Speed\x#*(MOVEMENT_SPEEDCOMP_LOW#+2)+DeltaCos#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_LOW#+3)*0.98
+					SpeedCompensation\z# = (Speed\z#*(MOVEMENT_SPEEDCOMP_LOW#+2)+DeltaSin#*Speed_Length#)/(MOVEMENT_SPEEDCOMP_LOW#+3)*0.98					
 				EndIf
 				
-				; Debugging tools
-				DEBUG_SpeedComp = Vector_Copy(SpeedCompensation)
-				
-				
+
+; Debugging tools
+DEBUG_SpeedComp = Vector_Copy(SpeedCompensation)
+				Vector_MultiplyByScalar(Acceleration, 1.025)	
 				Vector_LinearInterpolation(Speed, SpeedCompensation, d\Delta#)
-				
 			End If
 			
 			

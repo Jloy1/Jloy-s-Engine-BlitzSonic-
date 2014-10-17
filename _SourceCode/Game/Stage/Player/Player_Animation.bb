@@ -54,7 +54,9 @@
 
 	; Tilting consts
 	Const TILT_ANGLECLAMP	= 25
-	Const TILT_NORMALISETIME = 1.2
+	
+	; Only effective between 1.05 and 2.
+	Const TILT_NORMALISETIME = 1.1
 
 
 ; /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
@@ -171,7 +173,7 @@
 		
 		; Set it up to allow for tilting. This part is sensitive to FPS change, so be careful.
 		p\Animation\CharTilt\Tilt# = p\Animation\CharTilt\Tilt# - (differ2#)
-		p\Animation\CharTilt\Tilt# = p\Animation\CharTilt\Tilt# / Clamp#((TILT_NORMALISETIME*d\Delta), 1.1, 99999) ; Reduce the value as the player stops turning. With clamping...
+		p\Animation\CharTilt\Tilt# = p\Animation\CharTilt\Tilt# / Clamp#((TILT_NORMALISETIME*d\Delta), 1.05, 2) ; Reduce the value as the player stops turning. With clamping...
 		
 		; Cap the tilt to x degrees both ways. More clamping.
 		If p\Animation\CharTilt\Tilt# > TILT_ANGLECLAMP Then p\Animation\CharTilt\Tilt# = TILT_ANGLECLAMP

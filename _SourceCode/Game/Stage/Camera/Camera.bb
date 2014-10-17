@@ -61,6 +61,9 @@
 	Type tCamera
 		; ---- Camera entity variables ----
 		Field Entity
+		
+		; ---- Modern control camera pivot ----
+		Field ModernPivot
 
 		; ---- Camera attributes in world space ----
 		Field Position.tVector
@@ -115,6 +118,7 @@
 			
 			; Create camera and include initial setup
 			c\Entity 	= CreateCamera(Game\Stage\Root)
+			c\ModernPivot = CreatePivot(Game\Stage\Root)
 
 				; Setup camera
 				CameraZoom(c\Entity, 		CAMERA_FOV_NORMAL#)
@@ -192,16 +196,16 @@
 				c\TargetRotation\y# = c\TargetRotation\y#-Input\Movement_AnalogX#*Gameplay_Camera_RotationSpeedX#*d\Delta#
 				c\TargetRotation\x# = c\TargetRotation\x#-Input\Camera_AnalogY#*Gameplay_Camera_RotationSpeedY#*d\Delta#
 			
-;			Case PLAYER_MODE_MODERN
-;				; This is the new follow camera mode. This will try and simulate the Sonic Generations camera
-;				; to some degree. This is best used with an analog controller or joystick.
-;				;[NOTE: THIS MODE DOES NOT SUPPORT TARGET NORMALS ALIGNMENT]
-;				
-;				; This code correctly moves the camera.
-;				c\TargetRotation\x# = Clamp#(180+c\TargetRotation\x+Input\Camera_AnalogY#*Gameplay_Camera_RotationSpeedY#*d\Delta, 100, 260)-180
-;				c\TargetRotation\y# = EntityYaw#(c\Entity)+360
-;				RotationX# = Cos(Input\Movement_Direction)*Input\Movement_Pressure
-;				RotationY# = Sin(Input\Movement_Direction)*Input\Movement_Pressure
+			Case PLAYER_MODE_MODERN
+				; This is the new follow camera mode. This will try and simulate the Sonic Generations camera
+				; to some degree. This is best used with an analog controller or joystick.
+				;[NOTE: THIS MODE DOES NOT SUPPORT TARGET NORMALS ALIGNMENT]
+				
+				; This code correctly moves the camera.
+				c\TargetRotation\x# = Clamp#(180+c\TargetRotation\x+Input\Camera_AnalogY#*Gameplay_Camera_RotationSpeedY#*d\Delta, 100, 260)-180
+				c\TargetRotation\y# = EntityYaw#(c\Entity)+360
+				RotationX# = Cos(Input\Movement_Direction)*Input\Movement_Pressure
+				RotationY# = Sin(Input\Movement_Direction)*Input\Movement_Pressure
 				
 				
 		End Select
@@ -210,33 +214,61 @@
 		If (Input\Hold\CameraZoomIn)  Then c\DistanceFromTarget# = Clamp(c\DistanceFromTarget#-1, CAMERA_DISTANCE_NEAR#, CAMERA_DISTANCE_FAR#)
 		If (Input\Hold\CameraZoomOut) Then c\DistanceFromTarget# = Clamp(c\DistanceFromTarget#+1, CAMERA_DISTANCE_NEAR#, CAMERA_DISTANCE_FAR#)
 
-		; ---- If on spindash mode, change camera values -----
-		If (c\Target\Action = ACTION_SPINDASH) Then
-			c\DistanceFromCamera# = Interpolate#(c\DistanceFromCamera#, CAMERA_DISTANCE_NEAR#, 0.1*d\Delta)
-			c\FieldOfView#		  = Interpolate(c\FieldOfView#, CAMERA_FOV_SPINDASH, 0.1*d\Delta)
-		Else
-			c\DistanceFromCamera# = Interpolate#(c\DistanceFromCamera#, c\DistanceFromTarget#, 0.1*d\Delta)
-			c\FieldOfView#		  = Interpolate(c\FieldOfView#, CAMERA_FOV_NORMAL, 0.1*d\Delta)
-		End If
+		c\DistanceFromCamera# = Interpolate#(c\DistanceFromCamera#, c\DistanceFromTarget#, 0.1*d\Delta)
+		c\FieldOfView#		  = Interpolate(c\FieldOfView#, CAMERA_FOV_NORMAL, 0.1*d\Delta)
 
 		; ---- Finally, change camera position around the target -----
 		; Change position
 		Vector_Set(c\TargetPosition, EntityX#(c\Target\Objects\Entity), EntityY#(c\Target\Objects\Entity), EntityZ#(c\Target\Objects\Entity))
 		Vector_LinearInterpolation(c\Position, c\TargetPosition, Gameplay_Camera_Smoothness#*d\Delta)
 		Vector_LinearInterpolation(c\Rotation, c\TargetRotation, Gameplay_Camera_Smoothness#*d\Delta)
-		Vector_LinearInterpolation(c\Alignment, c\Target\Animation\Align, 0.05+Vector_Length(c\Target\Motion\Speed)*0.01*d\Delta)
+		Vector_LinearInterpolation(c\Alignment, c\Target\Animation\Align, 0.05+Vector_Length(c\Target\Motion\Speed)*0.01*d\Delta)	
+		
+		; Alternate Camera Mode
+		If (Gameplay_Control_Mode = 3) Then
+			; Apply changes
+			CameraZoom(c\Entity, 1/Tan#(c\FieldOfView#))
+			EntityType(c\Entity, COLLISION_NONE)
+			;EntityType(c\Entity, COLLISION_CAMERA)
+			AlignToVector(c\Entity, 0, 0, 0, 2)
+			PointEntity(c\ModernPivot, c\Target\Objects\Entity)	
+							
+			dst# = EntityDistance#(c\ModernPivot, c\Target\Objects\Entity)
+							
+			If (c\Target\Motion\Ground = True) Then
+				If (LinePick(EntityX#(c\ModernPivot), EntityY#(c\ModernPivot), EntityZ#(c\ModernPivot), 0, -28, 0)) Then	
+					ds# = (EntityDistance#(c\ModernPivot, c\Target\Objects\Entity))/14.0
+					If (LinePick(EntityX#(c\ModernPivot), EntityY#(c\ModernPivot), EntityZ#(c\ModernPivot), 0, -4*ds#, 0)) Then MoveEntity(c\ModernPivot, 0, 0.1*d\Delta#, 0)
+					If Not (LinePick(EntityX#(c\ModernPivot), EntityY#(c\ModernPivot), EntityZ#(c\ModernPivot), 0, -4.5*ds#, 0)) Then MoveEntity(c\ModernPivot, 0, -0.1*d\Delta#, 0)
+				End If
+			End If				
 
-		; Apply changes
-		CameraZoom(c\Entity, 1/Tan#(c\FieldOfView#))
-		EntityType(c\Entity, COLLISION_NONE)
-		PositionEntity(c\Entity, c\Position\x#, c\Position\y#, c\Position\z#)
-		EntityType(c\Entity, COLLISION_CAMERA)
-		RotateEntity(c\Entity, 0, 0, 0)
+			If EntityDistance(c\ModernPivot, c\Target\Objects\Entity) > 14 Then MoveEntity(c\ModernPivot, 0, 0, (0.5+(dst#-14)*0.25)*d\Delta#)
+			
+			dsm# = 20/(EntityDistance#(c\ModernPivot, c\Target\Objects\Entity))
+			If EntityDistance(c\ModernPivot, c\Target\Objects\Entity) < 8 Then MoveEntity(c\ModernPivot, 0, 0, (-0.3*dsm#)*d\Delta#)
+			
+			; Correct the camera
+			PositionEntity(c\Entity, EntityX#(c\ModernPivot), EntityY#(c\ModernPivot), EntityZ#(c\ModernPivot))
+			TranslateEntity(c\Entity, 0, 4, 0)
+			PointEntity(c\Entity, c\Target\Objects\Entity)
+		Else	
+		; Normal Camera Stuff
+			; Apply changes
+			CameraZoom(c\Entity, 1/Tan#(c\FieldOfView#))
+			EntityType(c\Entity, COLLISION_NONE)
+			PositionEntity(c\Entity, c\Position\x#, c\Position\y#, c\Position\z#)
+			EntityType(c\Entity, COLLISION_CAMERA)
+			RotateEntity(c\Entity, 0, 0, 0)
 		
-		If (c\Mode = CAMERA_MODE_TARGETPOV) Then AlignToVector(c\Entity, c\Alignment\x#, c\Alignment\y#, c\Alignment\z#, 2)
+			If (c\Mode = CAMERA_MODE_TARGETPOV) Then AlignToVector(c\Entity, c\Alignment\x#, c\Alignment\y#, c\Alignment\z#, 2)
 		
-		TurnEntity(c\Entity, c\Rotation\x#, c\Rotation\y#, c\Rotation\z#)
-		MoveEntity(c\Entity, 0, c\DistanceFromCamera#*0.25, -c\DistanceFromCamera#)
+			TurnEntity(c\Entity, c\Rotation\x#, c\Rotation\y#, c\Rotation\z#)
+			MoveEntity(c\Entity, 0, c\DistanceFromCamera#*0.25, -c\DistanceFromCamera#)
+		End If
+		
+		
+
 				
 	End Function
 ;~IDEal Editor Parameters:
