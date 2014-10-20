@@ -532,6 +532,7 @@ ScaleImage(IntroLogo, 2, 2)
 		For stg.tStageList = Each tStageList
 			Delete stg
 		Next
+		StageIDCounter = 0
 		If (changeToMenuState <> MENU_IGNOREARG) Then menuStage = changeToMenuState
 	End Function	
 	

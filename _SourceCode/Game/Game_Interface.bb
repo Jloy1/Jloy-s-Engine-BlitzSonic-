@@ -82,14 +82,14 @@
 			Interface_Number(Game\Others\FPS,					500*GAME_WINDOW_SCALE#, 30*GAME_WINDOW_SCALE#,		0, 1)
 			
 			; DEBUG STUFF
-			For d.tDeltaTime = Each tDeltaTime
-				Color(0,0,0)
-				Rect(0, GAME_WINDOW_H-50, GAME_WINDOW_W, 50)
-				Color(255,255,255)
-				Text(4, GAME_WINDOW_H-46,    "Motion DotProduct: " + Vector_DotProductNormalized#(DEBUG_AccelerationVector, DEBUG_SpeedVector))
-				Text(4, GAME_WINDOW_H-46+12, "        SpeedComp: " + Vector_Length#(DEBUG_SpeedComp)*d\Delta)
-				;Text(4, GAME_WINDOW_H-46+24, "     SpeedComp(z): " + DEBUG_SpeedComp\z#)
-			Next	
+			;For d.tDeltaTime = Each tDeltaTime
+			;	Color(0,0,0)
+			;	Rect(0, GAME_WINDOW_H-50, GAME_WINDOW_W, 50)
+			;	Color(255,255,255)
+			;	Text(4, GAME_WINDOW_H-46,    "Motion DotProduct: " + Vector_DotProductNormalized#(DEBUG_AccelerationVector, DEBUG_SpeedVector))
+			;	Text(4, GAME_WINDOW_H-46+12, "        SpeedComp: " + Vector_Length#(DEBUG_SpeedComp)*d\Delta)
+			;	;Text(4, GAME_WINDOW_H-46+24, "     SpeedComp(z): " + DEBUG_SpeedComp\z#)
+			;Next	
 			
 			; If on pause mode, render pause
 			If (Input_Lock = False) Then

@@ -81,6 +81,7 @@
 	Type tPlayer_Objects
 		Field Entity
 		Field Camera.tCamera
+		Field CameraFollowPivot
 		Field Shadow
 		Field Mesh
 		Field Mesh_Balance
@@ -158,10 +159,10 @@
 	Const ACTION_SPINDASH			= 3
 
 	; Common values
-	Const COMMON_XZACCELERATION#	= 0.032
+	Const COMMON_XZACCELERATION#	= 0.04
 	Const COMMON_XZDECELERATION#	= 0.016
 	Const COMMON_SKIDDINGFACTOR#	= 0.005
-	Const COMMON_XZTOPSPEED#		= 3.25
+	Const COMMON_XZTOPSPEED#		= 3.4
 	Const COMMON_XZMAXSPEED#		= 12.0
 	Const COMMON_YACCELERATION#		= 0.042
 	Const COMMON_YTOPSPEED#			= -6.0
@@ -202,6 +203,7 @@
 		p\Animation\Align = Vector(0, 1, 0)
 		
 		p\Objects\Entity  = CreatePivot(Game\Stage\Root)
+		p\Objects\CameraFollowPivot = CreatePivot(Game\Stage\Root)
 		
 		p\Flags\AllowCommonInput = True
 		p\Flags\AllowXZMovement  = True
@@ -248,7 +250,7 @@
 	; Player_Destroy
 	; =========================================================================================================
 	Function Player_Destroy(p.tPlayer)
-
+		; Redundant function.
 	End Function
 
 
@@ -260,9 +262,7 @@
 		Player_Motion(p, d)
 		
 		; Handle actions
-		;Player_Handle(p, d)
 		Player_Handle_Modern(p, d)
-		
 		
 		; Perform actions
 		Select p\Action

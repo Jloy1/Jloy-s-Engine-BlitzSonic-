@@ -119,7 +119,8 @@
 			; Create camera and include initial setup
 			c\Entity 	= CreateCamera(Game\Stage\Root)
 			c\ModernPivot = CreatePivot(Game\Stage\Root)
-
+			PositionEntity(c\ModernPivot, 0, 3, -10)
+			
 				; Setup camera
 				CameraZoom(c\Entity, 		CAMERA_FOV_NORMAL#)
 				CameraRange(c\Entity, 		0.1, 2000)
@@ -248,10 +249,24 @@
 			dsm# = 20/(EntityDistance#(c\ModernPivot, c\Target\Objects\Entity))
 			If EntityDistance(c\ModernPivot, c\Target\Objects\Entity) < 8 Then MoveEntity(c\ModernPivot, 0, 0, (-0.3*dsm#)*d\Delta#)
 			
+			PositionEntity(c\Target\Objects\CameraFollowPivot, EntityX#(c\Target\Objects\Entity), EntityY#(c\Target\Objects\Entity), EntityZ#(c\Target\Objects\Entity))
+			RotateEntity(c\Target\Objects\CameraFollowPivot, EntityPitch#(c\Target\Objects\Entity), c\Target\Animation\Direction#, EntityRoll#(c\Target\Objects\Entity))
+			
+			; More camera helping goodness.
+			playerSpeed# = Sqr#(c\Target\Motion\Speed\x#^2+c\Target\Motion\Speed\z#^2)
+			camVRate# = (1.25 + (playerSpeed#*2))
+			;camHRateExpected# = (c\Target\Animation\CharTilt\Tilt# / 3.5)
+			If (playerSpeed# > 1.1) Then
+				camHRate# = (c\Target\Animation\CharTilt\Tilt# / 3.5)
+			Else
+				camHRate# = 0
+			End If
+			MoveEntity(c\Target\Objects\CameraFollowPivot, -camHRate#, 0, -camVRate#)
+			
 			; Correct the camera
 			PositionEntity(c\Entity, EntityX#(c\ModernPivot), EntityY#(c\ModernPivot), EntityZ#(c\ModernPivot))
 			TranslateEntity(c\Entity, 0, 4, 0)
-			PointEntity(c\Entity, c\Target\Objects\Entity)
+			PointEntity(c\Entity, c\Target\Objects\CameraFollowPivot)
 		Else	
 		; Normal Camera Stuff
 			; Apply changes
